@@ -15,22 +15,36 @@ CLOSE_OBJECT_DISTANCE_THRESHOLD_CM = 20.0 # Si la distancia detectada está en e
                                                        # el vehículo girará mientras avanza.
                                                        # Cualquier distancia por debajo del unbral CLOSE_OBJECT_DISTANCE_CM, provocará que el 
                                                        # vehículo retroceda mientras gira.
-                                                       
+#TODO: Umbrales de luz
+#TODO: Umbrales de linea (si tiene sentido)
+                                                      
 # Valores que puede tomar la información extraída a partir de los datos del sensor de ultrasonidos:
 NO_OBSTACLE_DETECTED    =  0 # En estos casos, al tratarse de un valor categorial (no númerico) los valores de las etiquetas no son importantes, 
 FAR_OBSTACLE_DETECTED   =  1 # basta con que sean diferentes entre sí, para que se puedan distinguir unos de otros!
 CLOSE_OBSTACLE_DETECTED =  2
 NOT_KNOWN               = -1 # Esta etiqueta la ponemos en negativo para que resulte muy llamativa, se usará en caso de que el sensor de ultrasonidos
                                         # haya dado una lectura errónea.
-                                        
+#TODO: hacer lo mismo que en ultrasonidos para otros sensores 
+
+
+#TODO: Añadir nuevos estados si hiciera falta                                        
 # States
 STOP                              = 0
 MOVING_FORWARD_MAX                = 1
 MOVING_FORWARD_PROPORTIONAL       = 2
-MOVING_LEFT_MAX                   = 3
+MOVING_BACKWARD_MAX               = 3
+MOVING_BACKWARD_PROPORTIONAL      = 4
+PICK_OBJECT                       = 5
 
+#TODO: Añadir valores estados si hiciera falta
+# Valores de los sensores
 IMPOSSIBLE_DISTANCE = -1.0
+IMPOSIBLE_LUMINESCENSE = -1
+LINE_NO_DETECTED = 0
+LINE_DETECTED = 1
 
+#TODO: Añadir nuevos codigos de error si hiciera falta
+# Codigos de Error
 EXECUTION_ERROR = -1
 EXECUTION_SUCCESSFUL = 0
 
@@ -40,27 +54,38 @@ class Config:
         # Valores para la temporización
         #... añadir aquí otros valores de tiempo cuando se añadan nuevos sensores...
         self.ultrasonic_sensor_reading_period_in_millis = 150
+        #TODO: añadiry cambiar el periodo de muestro de los sensores
+        self.line_sensor_reading_period_in_millis = 150
+        self.light_sensor_reading_period_in_millis = 300
         self.user_interface_refresh_period_in_millis = 500
         
         # Valores para control de motores
-        self.max_speed_pwm_value = 255         # hacia adelante
+        self.max_speed_pwm_value = 100         # hacia adelante
+        self.min_real_speed_pwm_value = 20
 
 class Data:
     def __init__(self):
         # ...añadir más campos para guardar datos en caso de añadir nuevos sensores...
         self.detected_distance_in_centimeters = IMPOSSIBLE_DISTANCE
+        #TODO: añadir campos de los sensores
+        self.detected_light_in_range = IMPOSIBLE_LUMINESCENSE
+        self.detected_right_line = LINE_NO_DETECTED
+        self.detected_left_line = LINE_DETECTED
 
 class Information:
     def __init__(self):
         # ...añadir aquí variables para guardar la información extraída por los procesadores
         # a partir de la información de los nuevos sensores que se vayan a instalar.
         self.obstacle_presence = NOT_KNOWN
+        #TODO: añadir informacion de los sensores
         
 # Este struct contendrá las salidas que hay que aplicar a cada motor
 class Actions:
     def __init__(self):
         self.movement_motors_pwm = 0
         self.command = "forward"
+        #TODO:añadir acciones de la herramienta
+        self.tool_pwm = 0
         #...añadir otros en caso de añadir motores...
         
 # Clase robot
@@ -76,6 +101,7 @@ class Robot:
         self.st_information = Information()
         self.st_actions = Actions()
         
+        #TODO: Añadir nuevas variables para otros sensores
         # Añadimos información del estado
         self.state = STOP    # Inicializamos esta variable con un valor inicial por defecto para
                              # poder detectar errores en la fase de debug
@@ -83,13 +109,19 @@ class Robot:
         
         # Definimos las variables temporares de refresco
         self.previous_time_ultrasonic = time.time()*1000 # tiempo en millisegundos
+        self.previous_time_interface = self.previous_time_ultrasonic
+        self.previous_time_line = self.previous_time_ultrasonic
+        self.previous_time_light = self.previous_time_ultrasonic
+        
         self.current_time_ultrasonic = self.previous_time_ultrasonic
-        self.previous_time_interface = time.time()*1000
-        self.current_time_interface = self.previous_time_interface
-    
+        self.current_time_interface = self.previous_time_ultrasonic
+        self.current_time_line = self.previous_time_ultrasonic
+        self.current_time_light = self.previous_time_ultrasonic
+        
+        
     # Función específica para leer el sensor de ultrasonidos.    
     def readUltraSensor(self):
-        detected_distance_in_centimeters = IMPOSSIBLE_DISTANCE # Inicializamos con un valor imposible, de esta forma
+        #self.detected_distance_in_centimeters = IMPOSSIBLE_DISTANCE # Inicializamos con un valor imposible, de esta forma
                                                                # si hay cualquier problema con el sensor nos daremos cuenta
                                                                # al leer la información de depurado.
           
@@ -98,7 +130,8 @@ class Robot:
         # y comprobamos si se ha cumplido el tiempo mínimo para consultar el sensor
         if ( self.current_time_ultrasonic - self.previous_time_ultrasonic > self.st_config.ultrasonic_sensor_reading_period_in_millis ):
             # en caso de que sea momento de leer el sensor actualizamos la medida anterior
-            detected_distance_in_centimeters = self.mobile_robot.get_ultrasonic_reading(10)
+            self.st_meas.detected_distance_in_centimeters = self.mobile_robot.get_ultrasonic_reading(10)
+
 
             # y actualizamos el contador con el valor de tiempo en el que se ha realizado la última lectura del sensor.
             self.previous_time_ultrasonic = time.time()*1000
@@ -108,17 +141,18 @@ class Robot:
             # valor que tenga la variable, que será el de la última lectura válida, o la IMPOSSIBLE_DISTANCE,
             # en caso de que todavía no se haya producido ninguna medida.
                                                                   
-        return detected_distance_in_centimeters
-     # ...aquí habría que añadir las funciones para leer cada uno de los demás sensores que instalemos...
-
+    # ...aquí habría que añadir las funciones para leer cada uno de los demás sensores que instalemos...
+    # TODO: def readLineSensor(self)
+    # TODO: def readLightSensor(self) 
+    
+    
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
     # los datos de todos los sensores instalados.
     def readSensors(self):
-        self.st_meas.detected_distance_in_centimeters = IMPOSSIBLE_DISTANCE # lo inicializamos con valor inválido para detectar fallos en la
-                                                                        # lectura del sensor
-
+        
         # Llamamos a la función que lee el sensor de ultrasonidos
-        self.detected_distance_in_centimeters = self.readUltraSensor()
+        self.readUltraSensor()
+        # TODO: añadir las demas funciones de sensores
 
         # Si tuvieramos más sensores, habría que añadir las funciones para leerlos y guardar los
         # datos en otros campos del struct "st_meas"
@@ -145,11 +179,15 @@ class Robot:
                 else:
                     self.st_information.obstacle_presence = CLOSE_OBSTACLE_DETECTED # En caso contrario el obstáculo está en la zona cercana.
            
-
+    # ...aquí habría que añadir las funciones para procesar cada uno de los demás sensores que instalemos...
+    # TODO: def processLineSensor(self)
+    # TODO: def processLightSensor(self) 
+    
     # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
         self.processUltrasonicSensorData()
-
+        
+        # TODO: añadir las demas funciones de sensores
         # ...Aquí habría que añadir las distintas llamadas a los procesadores específicos para los datos de 
         # cada sensor
 
@@ -170,11 +208,13 @@ class Robot:
                                                    # la marcha hacia adelante usando un controlador proporcional
                                                    # con la distancia (más detalles en las implementaciones 
                                                    # de los controladores específicos).
+                                                       
         elif self.st_information.obstacle_presence == CLOSE_OBSTACLE_DETECTED:
             self.state = MOVING_LEFT_MAX # Si el obstáculo se encuentra en la zona cercana se hará
                                                          # retroceder al vehículo mientras gira. También implementaremos
                                                          # un control proporcional a la distancia, como se verá en la sección
                                                          # de controladores específicos.
+        #TODO: Añadir nuevos casos en la maquina de estados
         else:
             self.state = STOP # En caso de que venga algún valor extraño pararíamos el vehículo.
 
@@ -183,7 +223,8 @@ class Robot:
         # Símplemente pondremos ambos motores a cero. Por este motivo no necesitamos que la función
         self.st_actions.movement_motors_pwm = 0
         self.st_actions.command = "forward"
-
+    
+    #TODO: Cambiar los controladores para seguir la linea, no chocar, etc
     # Controlador específico que se utiliza para avanzar a la máxima velocidad permitida por configuración
     def controllerMovingForwardMax(self):
         # Al usar este controlador avanzaremos empleando la máxima velocidad permitida por la
@@ -204,37 +245,31 @@ class Robot:
         # para que quede en el intervalo [0, max_speed_pwm_value]
 
         # como el PWM tiene que ser un número entero, primero hacemos un casting a flotante "(float)max_speed_pwm_value"
-        pwm = float(self.st_config.max_speed_pwm_value) * (self.st_meas.detected_distance_in_centimeters - CLOSE_OBJECT_DISTANCE_THRESHOLD_CM) / (FAR_OBJECT_DISTANCE_THRESHOLD_CM - CLOSE_OBJECT_DISTANCE_THRESHOLD_CM)
+        pwm = self.st_config.min_real_speed_pwm_value + (float(self.st_config.max_speed_pwm_value - self.st_config.min_real_speed_pwm_value) * (self.st_meas.detected_distance_in_centimeters - CLOSE_OBJECT_DISTANCE_THRESHOLD_CM) / (FAR_OBJECT_DISTANCE_THRESHOLD_CM - CLOSE_OBJECT_DISTANCE_THRESHOLD_CM))
 
         # y luego redondeamos y pasamos a tipo int
         self.st_actions.movement_motors_pwm = int(round(pwm))
         
         self.st_actions.command = "forward"
 
-
-    # Controlador específico para girar a la izquierda.
-    def controllerMovingLeftMax(self):
-        # Al usar este controlador giraremos empleando la máxima velocidad permitida por la
-        # configuración
-        self.st_actions.movement_motors_pwm = self.st_config.max_speed_pwm_value
-        self.st_actions.command = "left"
-
     # ... Aquí habrá que añadir otros controladores específicos, como por ejemplo un siguelíneas, o uno para poner el vehículo perpendicular a una pared... #
-
+    # TODO: def controllerBackwardMax(self)
+    # TODO: def controllerBackwardProportional(self)
+    # TODO: def openTool(self)
+    # TODO: def closeTool(self)
 
     # Función genérica que llama al controlador específico adecuado en función de la tarea
     # que se deba realizar. 
     def controller(self):
         if self.state == STOP:
-            self.st_actions = self.controllerStop()
+            self.controllerStop()
         elif self.state == MOVING_FORWARD_MAX:
-            self.st_actions = self.controllerMovingForwardMax()     
+            self.controllerMovingForwardMax()     
         elif self.state == MOVING_FORWARD_PROPORTIONAL:
-            self.st_actions = self.controllerForwardProportional()         
-        elif self.state == MOVING_LEFT_MAX:
-            self.st_actions = self.controllerMovingLeftMax() 
-            
+            self.controllerForwardProportional()         
+             
         #... si hubiesen otros controladores habría que llamarlos desde otros casos...# 
+        #TODO: Modificar y añadir los estados y controladores
         else:
             # En el caso de que nos llegase un valor extraño en la variable current_state
             # utilizaremos el controlador del estado inicial (que símplemente mantiene
@@ -250,9 +285,9 @@ class Robot:
         # Usaremos un código de error para detectar posibles anomalías en los controladores
         self.error = EXECUTION_SUCCESSFUL
 
-        if ( self.st_actions.movement_motors_pwm > self.st_config.max_speed_pwm_value or self.st_actions.movement_motors_pwm < 0 ):
+        #if ( self.st_actions.movement_motors_pwm > self.st_config.max_speed_pwm_value or self.st_actions.movement_motors_pwm < 0 ):
             # En caso de que el valor esté fuera de rango activaremos el código de error
-            self.error = EXECUTION_ERROR 
+        #    self.error = EXECUTION_ERROR 
         
         # En caso de que no concuerde la  activaremos el código de error
         if ( self.state == MOVING_FORWARD_MAX and self.st_actions.command is not "forward" ):
@@ -266,10 +301,11 @@ class Robot:
         if( self.error == EXECUTION_ERROR ): 
             # En caso de error paramos motores por seguridad.
             self.st_actions.movement_motors_pwm = 0
+        
+        #TODO: Modificar y añadir los estados y controladores
 
         # Finalmente aplicamos a motor los PWM calculados.
         self.mobile_robot.set_command(command=self.st_actions.command, speed=self.st_actions.movement_motors_pwm)
-
 
     # Función encargada de refrescar la info para el usuario a intervalos de tiempo correctos
     def refreshUserInterface (self):
@@ -290,10 +326,15 @@ class Robot:
             #print("Right motor pwm = ")
             #println(st_actions.right_motor_pwm) 
 
-            print("Error code = " + str(error))
-
+            print("Error code = " + str(self.error))
+            
+            print("Speed = " + str(self.st_actions.movement_motors_pwm))
+            print("Command = " + str(self.st_actions.command))
+            
+            #TODO: Modificar y añadir los estados y controladores
+            
             # y actualizamos el contador con el valor de tiempo en el que se ha realizado la última lectura del sensor.
-            self.previous_time_interface = millis()
+            self.previous_time_interface = time.time()*1000
 
     
     def run_main(self):
