@@ -1,2 +1,2 @@
-# practica-1
+# Practica 1
 Repositorio que contiene los codigos y documentación de la primera práctica
