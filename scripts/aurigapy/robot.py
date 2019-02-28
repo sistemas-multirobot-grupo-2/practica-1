@@ -15,8 +15,8 @@ CLOSE_OBJECT_DISTANCE_THRESHOLD_CM = 20.0 # Si la distancia detectada está en e
                                                        # el vehículo girará mientras avanza.
                                                        # Cualquier distancia por debajo del unbral CLOSE_OBJECT_DISTANCE_CM, provocará que el 
                                                        # vehículo retroceda mientras gira.
-#TODO: Umbrales de luz
-#TODO: Umbrales de linea (si tiene sentido)
+#TODO (YJ): Umbrales de luz
+#TODO (YJ): Umbrales de linea (si tiene sentido)
                                                       
 # Valores que puede tomar la información extraída a partir de los datos del sensor de ultrasonidos:
 NO_OBSTACLE_DETECTED    =  0 # En estos casos, al tratarse de un valor categorial (no númerico) los valores de las etiquetas no son importantes, 
@@ -24,10 +24,10 @@ FAR_OBSTACLE_DETECTED   =  1 # basta con que sean diferentes entre sí, para que
 CLOSE_OBSTACLE_DETECTED =  2
 NOT_KNOWN               = -1 # Esta etiqueta la ponemos en negativo para que resulte muy llamativa, se usará en caso de que el sensor de ultrasonidos
                                         # haya dado una lectura errónea.
-#TODO: hacer lo mismo que en ultrasonidos para otros sensores 
+#TODO (YJ): hacer lo mismo que en ultrasonidos para otros sensores 
 
 
-#TODO: Añadir nuevos estados si hiciera falta                                        
+#TODO (SJ): Añadir nuevos estados si hiciera falta                                        
 # States
 STOP                              = 0
 MOVING_FORWARD_MAX                = 1
@@ -36,25 +36,26 @@ MOVING_BACKWARD_MAX               = 3
 MOVING_BACKWARD_PROPORTIONAL      = 4
 PICK_OBJECT                       = 5
 
-#TODO: Añadir valores estados si hiciera falta
+#TODO (YJ): Añadir valores estados si hiciera falta
 # Valores de los sensores
 IMPOSSIBLE_DISTANCE = -1.0
 IMPOSIBLE_LUMINESCENSE = -1
 LINE_NO_DETECTED = 0
 LINE_DETECTED = 1
 
-#TODO: Añadir nuevos codigos de error si hiciera falta
+#TODO (SJ): Añadir nuevos codigos de error si hiciera falta
 # Codigos de Error
 EXECUTION_ERROR = -1
 EXECUTION_SUCCESSFUL = 0
 
+#TODO (SJ): Modificar la clase para que funcione con cualquier robot, definiendo sus propiedades en el constructor 
 # Como structs de C
 class Config:
     def __init__(self):
         # Valores para la temporización
         #... añadir aquí otros valores de tiempo cuando se añadan nuevos sensores...
         self.ultrasonic_sensor_reading_period_in_millis = 150
-        #TODO: añadiry cambiar el periodo de muestro de los sensores
+        #TODO (YJ): añadiry cambiar el periodo de muestro de los sensores
         self.line_sensor_reading_period_in_millis = 150
         self.light_sensor_reading_period_in_millis = 300
         self.user_interface_refresh_period_in_millis = 500
@@ -67,7 +68,7 @@ class Data:
     def __init__(self):
         # ...añadir más campos para guardar datos en caso de añadir nuevos sensores...
         self.detected_distance_in_centimeters = IMPOSSIBLE_DISTANCE
-        #TODO: añadir campos de los sensores
+        #TODO (YJ): añadir campos de los sensores
         self.detected_light_in_range = IMPOSIBLE_LUMINESCENSE
         self.detected_right_line = LINE_NO_DETECTED
         self.detected_left_line = LINE_DETECTED
@@ -77,14 +78,14 @@ class Information:
         # ...añadir aquí variables para guardar la información extraída por los procesadores
         # a partir de la información de los nuevos sensores que se vayan a instalar.
         self.obstacle_presence = NOT_KNOWN
-        #TODO: añadir informacion de los sensores
+        #TODO (YJ): añadir informacion de los sensores
         
 # Este struct contendrá las salidas que hay que aplicar a cada motor
 class Actions:
     def __init__(self):
         self.movement_motors_pwm = 0
         self.command = "forward"
-        #TODO:añadir acciones de la herramienta
+        #TODO (PA):añadir acciones de la herramienta
         self.tool_pwm = 0
         #...añadir otros en caso de añadir motores...
         
@@ -101,13 +102,14 @@ class Robot:
         self.st_information = Information()
         self.st_actions = Actions()
         
-        #TODO: Añadir nuevas variables para otros sensores
+
         # Añadimos información del estado
         self.state = STOP    # Inicializamos esta variable con un valor inicial por defecto para
                              # poder detectar errores en la fase de debug
         self.error = EXECUTION_SUCCESSFUL
         
         # Definimos las variables temporares de refresco
+        #TODO (YJ): Añadir nuevas variables para otros sensores
         self.previous_time_ultrasonic = time.time()*1000 # tiempo en millisegundos
         self.previous_time_interface = self.previous_time_ultrasonic
         self.previous_time_line = self.previous_time_ultrasonic
@@ -142,8 +144,8 @@ class Robot:
             # en caso de que todavía no se haya producido ninguna medida.
                                                                   
     # ...aquí habría que añadir las funciones para leer cada uno de los demás sensores que instalemos...
-    # TODO: def readLineSensor(self)
-    # TODO: def readLightSensor(self) 
+    # TODO (YJ): def readLineSensor(self)
+    # TODO (YJ): def readLightSensor(self) 
     
     
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
@@ -152,7 +154,7 @@ class Robot:
         
         # Llamamos a la función que lee el sensor de ultrasonidos
         self.readUltraSensor()
-        # TODO: añadir las demas funciones de sensores
+        # TODO (YJ): añadir las demas funciones de sensores
 
         # Si tuvieramos más sensores, habría que añadir las funciones para leerlos y guardar los
         # datos en otros campos del struct "st_meas"
@@ -180,14 +182,14 @@ class Robot:
                     self.st_information.obstacle_presence = CLOSE_OBSTACLE_DETECTED # En caso contrario el obstáculo está en la zona cercana.
            
     # ...aquí habría que añadir las funciones para procesar cada uno de los demás sensores que instalemos...
-    # TODO: def processLineSensor(self)
-    # TODO: def processLightSensor(self) 
+    # TODO (YJ): def processLineSensor(self)
+    # TODO (YJ): def processLightSensor(self) 
     
     # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
         self.processUltrasonicSensorData()
         
-        # TODO: añadir las demas funciones de sensores
+        # TODO (YJ): añadir las demas funciones de sensores
         # ...Aquí habría que añadir las distintas llamadas a los procesadores específicos para los datos de 
         # cada sensor
 
@@ -214,7 +216,7 @@ class Robot:
                                                          # retroceder al vehículo mientras gira. También implementaremos
                                                          # un control proporcional a la distancia, como se verá en la sección
                                                          # de controladores específicos.
-        #TODO: Añadir nuevos casos en la maquina de estados
+        #TODO (SJ): Añadir nuevos casos en la maquina de estados
         else:
             self.state = STOP # En caso de que venga algún valor extraño pararíamos el vehículo.
 
@@ -224,7 +226,7 @@ class Robot:
         self.st_actions.movement_motors_pwm = 0
         self.st_actions.command = "forward"
     
-    #TODO: Cambiar los controladores para seguir la linea, no chocar, etc
+    #TODO (PA): Cambiar los controladores para seguir la linea, no chocar, etc
     # Controlador específico que se utiliza para avanzar a la máxima velocidad permitida por configuración
     def controllerMovingForwardMax(self):
         # Al usar este controlador avanzaremos empleando la máxima velocidad permitida por la
@@ -253,10 +255,10 @@ class Robot:
         self.st_actions.command = "forward"
 
     # ... Aquí habrá que añadir otros controladores específicos, como por ejemplo un siguelíneas, o uno para poner el vehículo perpendicular a una pared... #
-    # TODO: def controllerBackwardMax(self)
-    # TODO: def controllerBackwardProportional(self)
-    # TODO: def openTool(self)
-    # TODO: def closeTool(self)
+    # TODO (PA): def controllerBackwardMax(self)
+    # TODO (PA): def controllerBackwardProportional(self)
+    # TODO (PA): def openTool(self)
+    # TODO (PA): def closeTool(self)
 
     # Función genérica que llama al controlador específico adecuado en función de la tarea
     # que se deba realizar. 
@@ -269,7 +271,7 @@ class Robot:
             self.controllerForwardProportional()         
              
         #... si hubiesen otros controladores habría que llamarlos desde otros casos...# 
-        #TODO: Modificar y añadir los estados y controladores
+        #TODO (SJ): Modificar y añadir los estados y controladores
         else:
             # En el caso de que nos llegase un valor extraño en la variable current_state
             # utilizaremos el controlador del estado inicial (que símplemente mantiene
@@ -302,7 +304,7 @@ class Robot:
             # En caso de error paramos motores por seguridad.
             self.st_actions.movement_motors_pwm = 0
         
-        #TODO: Modificar y añadir los estados y controladores
+        #TODO (SJ): Modificar y añadir los estados y controladores
 
         # Finalmente aplicamos a motor los PWM calculados.
         self.mobile_robot.set_command(command=self.st_actions.command, speed=self.st_actions.movement_motors_pwm)
@@ -331,7 +333,7 @@ class Robot:
             print("Speed = " + str(self.st_actions.movement_motors_pwm))
             print("Command = " + str(self.st_actions.command))
             
-            #TODO: Modificar y añadir los estados y controladores
+            #TODO(SJ): Modificar y añadir los estados y controladores
             
             # y actualizamos el contador con el valor de tiempo en el que se ha realizado la última lectura del sensor.
             self.previous_time_interface = time.time()*1000
