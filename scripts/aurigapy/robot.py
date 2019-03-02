@@ -4,121 +4,30 @@
 from aurigapy import *
 import time
 
-
-## Constantes y variables globales
-
-# Umbrales de distancia:
-FAR_OBJECT_DISTANCE_THRESHOLD_CM   = 40.0 # Cualquier obstáculo a una distancia mayor de la definida aquí se considera que no
-                                                       # es un obstáculo, y por lo tanto el vehículo puede continuar recto.
-
-CLOSE_OBJECT_DISTANCE_THRESHOLD_CM = 20.0 # Si la distancia detectada está en el intervalo [CLOSE_OBJECT_DISTANCE_CM, FAR_OBJECT_DISTANCE_CM]
-                                                       # el vehículo girará mientras avanza.
-                                                       # Cualquier distancia por debajo del unbral CLOSE_OBJECT_DISTANCE_CM, provocará que el 
-                                                       # vehículo retroceda mientras gira.
-#TODO (YJ): Umbrales de luz
-#TODO (YJ): Umbrales de linea (si tiene sentido)
-                                                      
-# Valores que puede tomar la información extraída a partir de los datos del sensor de ultrasonidos:
-NO_OBSTACLE_DETECTED    =  0 # En estos casos, al tratarse de un valor categorial (no númerico) los valores de las etiquetas no son importantes, 
-FAR_OBSTACLE_DETECTED   =  1 # basta con que sean diferentes entre sí, para que se puedan distinguir unos de otros!
-CLOSE_OBSTACLE_DETECTED =  2
-NOT_KNOWN               = -1 # Esta etiqueta la ponemos en negativo para que resulte muy llamativa, se usará en caso de que el sensor de ultrasonidos
-                                        # haya dado una lectura errónea.
-#TODO (YJ): hacer lo mismo que en ultrasonidos para otros sensores 
-
-
-#TODO (SJ): Añadir nuevos estados si hiciera falta                                        
-# States
-STOP                              = 0
-MOVING_FORWARD_MAX                = 1
-MOVING_FORWARD_PROPORTIONAL       = 2
-MOVING_BACKWARD_MAX               = 3
-MOVING_BACKWARD_PROPORTIONAL      = 4
-PICK_OBJECT                       = 5
-
-#TODO (YJ): Añadir valores estados si hiciera falta
-# Valores de los sensores
-IMPOSSIBLE_DISTANCE = -1.0
-IMPOSIBLE_LUMINESCENSE = -1
-LINE_NO_DETECTED = 0
-LINE_DETECTED = 1
-
-#TODO (SJ): Añadir nuevos codigos de error si hiciera falta
-# Codigos de Error
-EXECUTION_ERROR = -1
-EXECUTION_SUCCESSFUL = 0
-
-#TODO (SJ): Modificar la clase para que funcione con cualquier robot, definiendo sus propiedades en el constructor 
-# Como structs de C
+# Este struct contendrá la información de configuración del robot
 class Config:
     def __init__(self):
-        # Valores para la temporización
-        #... añadir aquí otros valores de tiempo cuando se añadan nuevos sensores...
-        self.ultrasonic_sensor_reading_period_in_millis = 150
-        #TODO (YJ): añadiry cambiar el periodo de muestro de los sensores
-        self.line_sensor_reading_period_in_millis = 150
-        self.light_sensor_reading_period_in_millis = 300
-        self.user_interface_refresh_period_in_millis = 500
-        
-        # Valores para control de motores
-        self.max_speed_pwm_value = 100         # hacia adelante
-        self.min_real_speed_pwm_value = 20
+        print("Init Class")
 
+# Este struct contendrá la información raw de los sensores
 class Data:
     def __init__(self):
-        # ...añadir más campos para guardar datos en caso de añadir nuevos sensores...
-        self.detected_distance_in_centimeters = IMPOSSIBLE_DISTANCE
-        #TODO (YJ): añadir campos de los sensores
-        self.detected_light_in_range = IMPOSIBLE_LUMINESCENSE
-        self.detected_right_line = LINE_NO_DETECTED
-        self.detected_left_line = LINE_DETECTED
+        print("Init Class")
 
+# Este struct contendrá la información procesada de los sensores
 class Information:
     def __init__(self):
-        # ...añadir aquí variables para guardar la información extraída por los procesadores
-        # a partir de la información de los nuevos sensores que se vayan a instalar.
-        self.obstacle_presence = NOT_KNOWN
-        #TODO (YJ): añadir informacion de los sensores
+        print("Init Class")
         
 # Este struct contendrá las salidas que hay que aplicar a cada motor
 class Actions:
     def __init__(self):
-        self.movement_motors_pwm = 0
-        self.command = "forward"
-        #TODO (PA):añadir acciones de la herramienta
-        self.tool_pwm = 0
-        #...añadir otros en caso de añadir motores...
+        print("Init Class")
         
 # Clase robot
 class Robot:
     def __init__(self,bluetooth_path):
-        # Definimos el robot y la conexion
-        #self.mobile_robot = AurigaPy(debug=False)
-        #self.mobile_robot.connect(bluetooth_path)
-        
-        # Añadimos información de los structs de datos
-        self.st_config = Config()
-        self.st_meas = Data() # Declaramos un struct de tipo Measurement para guardar las medidas de todos los sensores
-        self.st_information = Information()
-        self.st_actions = Actions()
-        
-
-        # Añadimos información del estado
-        self.state = STOP    # Inicializamos esta variable con un valor inicial por defecto para
-                             # poder detectar errores en la fase de debug
-        self.error = EXECUTION_SUCCESSFUL
-        
-        # Definimos las variables temporares de refresco
-        #TODO (YJ): Añadir nuevas variables para otros sensores
-        self.previous_time_ultrasonic = time.time()*1000 # tiempo en millisegundos
-        self.previous_time_interface = self.previous_time_ultrasonic
-        self.previous_time_line = self.previous_time_ultrasonic
-        self.previous_time_light = self.previous_time_ultrasonic
-        
-        self.current_time_ultrasonic = self.previous_time_ultrasonic
-        self.current_time_interface = self.previous_time_ultrasonic
-        self.current_time_line = self.previous_time_ultrasonic
-        self.current_time_light = self.previous_time_ultrasonic
+        print("Init Class")
         
         
     # Función específica para leer el sensor de ultrasonidos.    
