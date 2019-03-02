@@ -8,7 +8,9 @@ from robot import Robot
 def main():
     try:
         #robot_1 = Robot(bluetooth_path="/dev/rfcomm1")
-        robot_8 = Robot(bluetooth_path="/dev/rfcomm8",robot_rol=0,robot_sensors_list=["ultrasonic","ultrasonic"])
+        robot_8 = Robot(bluetooth_path="/dev/rfcomm8",robot_rol=0,
+                        robot_sensors_list=["ultrasonic","ultrasonic"],
+                        robot_sensor_ports_list=[9,10])
         
         robot_8.run_main()
         # falta añadir multithreading

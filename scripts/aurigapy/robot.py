@@ -61,7 +61,7 @@ class Actions:
         
 # Clase robot
 class Robot:
-    def __init__(self,bluetooth_path,robot_rol,robot_sensors_list):
+    def __init__(self,bluetooth_path,robot_rol,robot_sensors_list,robot_sensor_ports_list):
         print("Init Class")
         
         # Añadimos información de los structs de datos
@@ -75,30 +75,31 @@ class Robot:
         
         self.rol = robot_rol
         self.list_of_sensors = robot_sensors_list
+        self.sensor_ports = robot_sensor_ports_list
         
         
                 
     # Función específica para leer el sensor de ultrasonidos.    
-    def readUltraSensor(self):
-        print("Leemos sensor ultrasonidos") 
+    def readUltraSensor(self,port):
+        print("Leemos sensor ultrasonidos en el puerto " + str(port)) 
     
     
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
     # los datos de todos los sensores instalados.
     def readSensors(self):
         for sensor in READ_SENSORS:
-            READ_SENSORS[sensor]()
+            READ_SENSORS[sensor](self.sensor_ports[sensor])
 
   
     # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
     # sensor de ultrasonidos.
-    def processUltrasonicSensorData(self):
-        print("Procesamos la información del sensor de ultrasonidos")
+    def processUltrasonicSensorData(self,port):
+        print("Procesamos la información del sensor de ultrasonidos en el puerto " + str(port))
     
     # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
         for sensor in READ_SENSORS:
-            PROCESS_SENSORS[sensor]()
+            PROCESS_SENSORS[sensor](self.sensor_ports[sensor])
 
     # Función para determinar qué tarea se va a llevar a cabo a partir de la información extraída a partir
     # de los datos de los sensores. 
