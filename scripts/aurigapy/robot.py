@@ -4,6 +4,23 @@
 from aurigapy import *
 import time
 
+##-----Constantes y variables globales-----##
+
+# Estados
+STOP                              = 0
+MOVING_FORWARD_MAX                = 1
+MOVING_FORWARD_PROPORTIONAL       = 2
+MOVING_BACKWARD_MAX               = 3
+MOVING_BACKWARD_PROPORTIONAL      = 4
+PICK_OBJECT                       = 5
+UNDEFINED                         = 6
+
+
+# Codigos de Error
+EXECUTION_ERROR = -1
+EXECUTION_SUCCESSFUL = 0
+
+##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot
 class Config:
     def __init__(self):
@@ -29,6 +46,15 @@ class Robot:
     def __init__(self,bluetooth_path):
         print("Init Class")
         
+        # Añadimos información de los structs de datos
+        self.st_config = Config()
+        self.st_meas = Data() 
+        self.st_information = Information()
+        self.st_actions = Actions()
+        
+        self.state = STOP
+        self.error = EXECUTION_SUCCESSFUL
+        
         
     # Función específica para leer el sensor de ultrasonidos.    
     def readUltraSensor(self):
@@ -53,15 +79,55 @@ class Robot:
     # de los datos de los sensores. 
     def updateFiniteStateMachine(self):
         print("Actualizamos la maquina de estados")
-
+        
+        if(self.st_meas):
+            self.state = STOP
+            
+        elif(self.st_meas):
+            self.state = MOVING_FORWARD_MAX
+            
+        elif(self.st_meas):
+            self.state = MOVING_FORWARD_PROPORTIONAL
+        
+        elif(self.st_meas):
+            self.state = MOVING_BACKWARD_MAX    
+            
+        elif(self.st_meas):
+            self.state = MOVING_BACKWARD_PROPORTIONAL    
+            
+        elif(self.st_meas):
+            self.state = PICK_OBJECT
+        
+        else:
+            self.state = UNDEFINED                
+            
     # Controlador específico para parar motores
     def controllerStop(self):
         print("Calculamos la acción de control")
-
+                
     # Función genérica que llama al controlador específico adecuado en función de la tarea
     # que se deba realizar. 
     def controller(self):
-        self.controllerStop()         
+        if(self.state == STOP):
+            self.controllerStop()
+            
+        elif(self.state == MOVING_FORWARD_MAX):
+            self.controllerStop()
+
+        elif(self.state == MOVING_FORWARD_PROPORTIONAL):
+            self.controllerStop()
+            
+        elif(self.state == MOVING_BACKWARD_MAX):
+            self.controllerStop()
+            
+        elif(self.state == MOVING_BACKWARD_PROPORTIONAL):
+            self.controllerStop()
+        
+        elif(self.state == PICK_OBJECT):
+            self.controllerStop()
+        
+        elif(self.state == UNDEFINED):
+            self.controllerStop()       
 
     # Función encargada de pasar a motores los comandos calculados por los controladores
     # este es el último punto antes de actuar sobre los motores,por lo que tenemos que 
@@ -70,6 +136,11 @@ class Robot:
     # antes de actuar!!
     def execute(self):
         print("Mandamos la acción de control a los actuadores")
+        
+        self.error = EXECUTION_SUCCESSFUL
+        
+        if(self.state == UNDEFINED):
+            self.error = EXECUTION_ERROR
 
     # Función encargada de refrescar la info para el usuario a intervalos de tiempo correctos
     def refreshUserInterface (self):
@@ -97,6 +168,7 @@ class Robot:
             # Publicamos info importante para el debug
             self.refreshUserInterface()
             
+            print("--------------------------")
             time.sleep(2)
             
         
