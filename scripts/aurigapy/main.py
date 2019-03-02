@@ -14,16 +14,16 @@ def main():
         # falta añadir multithreading
         
         
-        
+    except KeyboardInterrupt:
+        print('\nCancelled by user. Bye!')    
     except:
         #robot_1.close()
-        robot_8.close()
+        #robot_8.mobile_robot.close()
         print("Error: " + str(sys.exc_info()[0]))
+        pass
 
 if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
         print('\nCancelled by user. Bye!')
-    except: # catch *all* exceptions
-        print("Error: " + sys.exc_info()[0])
