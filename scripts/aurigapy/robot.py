@@ -7,22 +7,22 @@ import time
 ##-----Constantes y variables globales-----##
 
 # Estados
-STOP                              = 0
-MOVING_FORWARD_MAX                = 1
-MOVING_FORWARD_PROPORTIONAL       = 2
-MOVING_BACKWARD_MAX               = 3
-MOVING_BACKWARD_PROPORTIONAL      = 4
-PICK_OBJECT                       = 5
+STOP                              =  0
+MOVING_FORWARD_MAX                =  1
+MOVING_FORWARD_PROPORTIONAL       =  2
+MOVING_BACKWARD_MAX               =  3
+MOVING_BACKWARD_PROPORTIONAL      =  4
+PICK_OBJECT                       =  5
 UNDEFINED                         = -1
 
 
 # Codigos de Error
-EXECUTION_ERROR = -1
-EXECUTION_SUCCESSFUL = 0
+EXECUTION_ERROR         = -1
+EXECUTION_SUCCESSFUL    =  0
 
 # Roles
-LEADER = 0
-FOLLOWER = 1
+LEADER      = 0
+FOLLOWER    = 1
 
 # Diccionarios de Sensores
 # Permiten hacer la clase más genérica
@@ -42,27 +42,41 @@ def addSensors(list_of_sensors,self):
 # Este struct contendrá la información de configuración del robot
 class Config:
     def __init__(self):
-        print("Init Class")
+        print("Init Class Config")
 
 # Este struct contendrá la información raw de los sensores
 class Data:
     def __init__(self):
-        print("Init Class")
+        print("Init Class Data")
 
 # Este struct contendrá la información procesada de los sensores
 class Information:
     def __init__(self):
-        print("Init Class")
+        print("Init Class Information")
         
 # Este struct contendrá las salidas que hay que aplicar a cada motor
 class Actions:
     def __init__(self):
-        print("Init Class")
+        print("Init Class Actions")
         
 # Clase robot
 class Robot:
-    def __init__(self,bluetooth_path,robot_rol,robot_sensors_list,robot_sensor_ports_list):
-        print("Init Class")
+    def __init__(self,mode,bluetooth_path,robot_rol,robot_sensors_list,robot_sensor_ports_list):
+        print("Init Class Robot")
+        
+        if(mode == 'real_robot'):
+            print("Modo usando el Robot real")
+            self.mobile_robot = AurigaPy(debug=False)
+            self.mobile_robot.connect(bluetooth_path)
+            self.error = EXECUTION_SUCCESSFUL
+        
+        elif(mode == 'simulation'):
+            print("Modo de Simulacion")
+            self.error = EXECUTION_SUCCESSFUL
+        
+        else:
+            print("Modo no reconocido")
+            self.error = EXECUTION_ERROR
         
         # Añadimos información de los structs de datos
         self.st_config = Config()
