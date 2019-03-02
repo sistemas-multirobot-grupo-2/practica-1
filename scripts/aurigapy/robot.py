@@ -13,7 +13,7 @@ MOVING_FORWARD_PROPORTIONAL       = 2
 MOVING_BACKWARD_MAX               = 3
 MOVING_BACKWARD_PROPORTIONAL      = 4
 PICK_OBJECT                       = 5
-UNDEFINED                         = 6
+UNDEFINED                         = -1
 
 
 # Codigos de Error
@@ -21,8 +21,8 @@ EXECUTION_ERROR = -1
 EXECUTION_SUCCESSFUL = 0
 
 # Roles
-LIDER = 0
-SEGUIDOR = 1
+LEADER = 0
+FOLLOWER = 1
 
 # Diccionarios de Sensores
 # Permiten hacer la clase más genérica
@@ -73,7 +73,13 @@ class Robot:
         self.state = STOP
         self.error = EXECUTION_SUCCESSFUL
         
-        self.rol = robot_rol
+        if robot_rol == "leader":
+            self.rol = LEADER
+        elif robot_rol == "follower":
+            self.rol = FOLLOWER
+        else:
+            self.rol = UNDEFINED
+            
         self.list_of_sensors = robot_sensors_list
         self.sensor_ports = robot_sensor_ports_list
         
@@ -100,13 +106,28 @@ class Robot:
     def processData(self):
         for sensor in READ_SENSORS:
             PROCESS_SENSORS[sensor](self.sensor_ports[sensor])
-
+    
+    def leaderFiniteStateMachine(self):
+        print("Actualizamos la maquina de estado del lider")
+    
+    def followerFiniteStateMachine(self):
+        print("Actualizamos la maquina de estados del seguidor")
+    
     # Función para determinar qué tarea se va a llevar a cabo a partir de la información extraída a partir
-    # de los datos de los sensores. 
+    # de los datos de los sensores y del rol del robot. 
     def updateFiniteStateMachine(self):
-        print("Actualizamos la maquina de estados")
         
-        if(self.st_meas):
+        if(self.rol == LEADER):
+            self.leaderFiniteStateMachine()
+        
+        elif(self.rol == FOLLOWER):
+            self.followerFiniteStateMachine()
+            
+        else:
+            self.state = STOP
+        
+        
+        """if(self.st_meas):
             self.state = STOP
             
         elif(self.st_meas):
@@ -125,7 +146,7 @@ class Robot:
             self.state = PICK_OBJECT
         
         else:
-            self.state = UNDEFINED                
+            self.state = UNDEFINED"""               
             
     # Controlador específico para parar motores
     def controllerStop(self):
@@ -153,6 +174,9 @@ class Robot:
             self.controllerStop()
         
         elif(self.state == UNDEFINED):
+            self.controllerStop()
+        
+        else:
             self.controllerStop()       
 
     # Función encargada de pasar a motores los comandos calculados por los controladores
