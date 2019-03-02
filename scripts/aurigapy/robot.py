@@ -107,9 +107,11 @@ class Robot:
         for sensor in READ_SENSORS:
             PROCESS_SENSORS[sensor](self.sensor_ports[sensor])
     
+    # Funcion para determinar el siguiente estado del Lider
     def leaderFiniteStateMachine(self):
         print("Actualizamos la maquina de estado del lider")
     
+    # Funcion para determinar el siguiente estado del Seguidor
     def followerFiniteStateMachine(self):
         print("Actualizamos la maquina de estados del seguidor")
     
@@ -125,8 +127,7 @@ class Robot:
             
         else:
             self.state = STOP
-        
-        
+         
         """if(self.st_meas):
             self.state = STOP
             
@@ -220,7 +221,7 @@ class Robot:
             self.refreshUserInterface()
             
             print("--------------------------")
-            time.sleep(2)
+            time.sleep(2) #!!!!!!!!!!!!!!!! ELIMINAR DELAY !!!!!!!!!!!!!!!!#
             
         
 
