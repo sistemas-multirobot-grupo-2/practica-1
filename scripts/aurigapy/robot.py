@@ -24,6 +24,8 @@ EXECUTION_SUCCESSFUL = 0
 LIDER = 0
 SEGUIDOR = 1
 
+# Diccionarios de Sensores
+# Permiten hacer la clase más genérica
 READ_SENSORS = {0:""}
 PROCESS_SENSORS = {0:""}
 
