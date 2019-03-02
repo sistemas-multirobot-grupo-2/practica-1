@@ -20,6 +20,22 @@ UNDEFINED                         = 6
 EXECUTION_ERROR = -1
 EXECUTION_SUCCESSFUL = 0
 
+# Roles
+LIDER = 0
+SEGUIDOR = 1
+
+READ_SENSORS = {0:""}
+PROCESS_SENSORS = {0:""}
+
+def addSensors(list_of_sensors,self):
+        count = 0
+        for sensor in list_of_sensors:
+            if(sensor == "ultrasonic"):
+                READ_SENSORS[count] = self.readUltraSensor
+                PROCESS_SENSORS[count] = self.processUltrasonicSensorData
+                print("Add " + sensor + " sensor")
+            count += 1
+
 ##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot
 class Config:
@@ -43,7 +59,7 @@ class Actions:
         
 # Clase robot
 class Robot:
-    def __init__(self,bluetooth_path):
+    def __init__(self,bluetooth_path,robot_rol,robot_sensors_list):
         print("Init Class")
         
         # Añadimos información de los structs de datos
@@ -55,7 +71,11 @@ class Robot:
         self.state = STOP
         self.error = EXECUTION_SUCCESSFUL
         
+        self.rol = robot_rol
+        self.list_of_sensors = robot_sensors_list
         
+        
+                
     # Función específica para leer el sensor de ultrasonidos.    
     def readUltraSensor(self):
         print("Leemos sensor ultrasonidos") 
@@ -64,7 +84,9 @@ class Robot:
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
     # los datos de todos los sensores instalados.
     def readSensors(self):
-        self.readUltraSensor()
+        for sensor in READ_SENSORS:
+            READ_SENSORS[sensor]()
+
   
     # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
     # sensor de ultrasonidos.
@@ -73,7 +95,8 @@ class Robot:
     
     # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
-        self.processUltrasonicSensorData()
+        for sensor in READ_SENSORS:
+            PROCESS_SENSORS[sensor]()
 
     # Función para determinar qué tarea se va a llevar a cabo a partir de la información extraída a partir
     # de los datos de los sensores. 
@@ -148,6 +171,7 @@ class Robot:
 
     
     def run_main(self):
+        addSensors(self.list_of_sensors,self)
         while True:
             # Leemos los sensores
             self.readSensors()
