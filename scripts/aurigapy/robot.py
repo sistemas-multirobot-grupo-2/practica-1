@@ -24,8 +24,8 @@ EXECUTION_ERROR         = -1
 EXECUTION_SUCCESSFUL    =  0
 
 # Roles
-LEADER      = 0
-FOLLOWER    = 1
+LEADER      =  0
+FOLLOWER    =  1
 UNDEFINED   = -1
 
 # TODO: Añadir elementos cuando esten todos los sensores
