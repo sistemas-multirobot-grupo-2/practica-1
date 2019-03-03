@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 
+# Este script contiene la clase robot, que puede tener distintos sensores y controladores
 
 from aurigapy import *
 import sensors
+import controllers
 import time
 
 ##-----Constantes y variables globales-----##
@@ -185,38 +187,34 @@ class Robot:
         else:
             self.state = STOP               
             
-    # Controlador específico para parar motores
-    def controllerStop(self):
-        if(self.mode == 'simulation'):
-            print(self.name + ": Calculamos la acción de control")
                 
     # Función genérica que llama al controlador específico adecuado en función de la tarea
     # que se deba realizar. 
     # TODO: Cambiar el selector del controlador cuando estén los controladores y estados
     def controller(self):
         if(self.state == STOP):
-            self.controllerStop()
+            controllers.controllerStop(self)
             
         elif(self.state == MOVING_FORWARD_MAX):
-            self.controllerStop()
+            controllers.controllerStop(self)
 
         elif(self.state == MOVING_FORWARD_PROPORTIONAL):
-            self.controllerStop()
+            controllers.controllerStop(self)
             
         elif(self.state == MOVING_BACKWARD_MAX):
-            self.controllerStop()
+            controllers.controllerStop(self)
             
         elif(self.state == MOVING_BACKWARD_PROPORTIONAL):
-            self.controllerStop()
+            controllers.controllerStop(self)
         
         elif(self.state == PICK_OBJECT):
-            self.controllerStop()
+            controllers.controllerStop(self)
         
         elif(self.state == UNDEFINED):
-            self.controllerStop()
+            controllers.controllerStop(self)
         
         else:
-            self.controllerStop()       
+            controllers.controllerStop(self)       
 
     # Función encargada de pasar a motores los comandos calculados por los controladores
     # este es el último punto antes de actuar sobre los motores,por lo que tenemos que 
@@ -243,6 +241,7 @@ class Robot:
     # control y muestra de datos
     def run_main(self):
         addSensors(self.list_of_sensors,self)
+        
         while True:
             # Leemos los sensores
             self.readSensors()

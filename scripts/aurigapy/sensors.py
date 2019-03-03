@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 
+## Este script se encarga de recoger las funciones que engloban la lectura y procesado de los datos
+
+
 from aurigapy import *
 import time
 
