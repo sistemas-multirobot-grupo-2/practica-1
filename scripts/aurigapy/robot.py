@@ -2,6 +2,7 @@
 
 
 from aurigapy import *
+import sensors
 import time
 
 ##-----Constantes y variables globales-----##
@@ -30,13 +31,13 @@ def addSensors(list_of_sensors,self):
         count = 0
         for sensor in list_of_sensors:
             if(sensor == "ultrasonic"):
-                self.READ_SENSORS[count] = self.readUltraSensor
-                self.PROCESS_SENSORS[count] = self.processUltrasonicSensorData
+                self.READ_SENSORS[count] = sensors.readUltraSensor
+                self.PROCESS_SENSORS[count] = sensors.processUltrasonicSensorData
                 print("Add " + sensor + " sensor")
                 count += 1
             elif(sensor == "light"):
-                self.READ_SENSORS[count] = self.readLightSensor
-                self.PROCESS_SENSORS[count] = self.processLightSensorData
+                self.READ_SENSORS[count] = sensors.readLightSensor
+                self.PROCESS_SENSORS[count] = sensors.processLightSensorData
                 print("Add " + sensor + " sensor")
                 count += 1
 
@@ -107,42 +108,17 @@ class Robot:
         self.READ_SENSORS = {0:""}
         self.PROCESS_SENSORS = {0:""}
 
-        
-        
-                
-    # Función específica para leer el sensor de ultrasonidos.    
-    def readUltraSensor(self,port):
-        if(self.mode == 'simulation'): 
-            print(self.name + ": Leemos sensor ultrasonidos en el puerto " + str(port))
-            
-    # Función específica para leer el sensor de luz
-    def readLightSensor(self,port):
-        if(self.mode == 'simulation'): 
-            print(self.name + ": Leemos sensor de luz en el puerto " + str(port)) 
     
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
     # los datos de todos los sensores instalados.
     def readSensors(self):
         for sensor in self.READ_SENSORS:
-            self.READ_SENSORS[sensor](self.sensor_ports[sensor])
+            self.READ_SENSORS[sensor](self,self.sensor_ports[sensor])
 
-  
-    # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
-    # sensor de ultrasonidos.
-    def processUltrasonicSensorData(self,port):
-        if(self.mode == 'simulation'):
-            print(self.name + ": Procesamos la información del sensor de ultrasonidos en el puerto " + str(port))
-            
-    # Procesador específico para extaer información acerca de la presencia de una fuente lumínica en base a los datos del 
-    # sensor de luz.
-    def processLightSensorData(self,port):
-        if(self.mode == 'simulation'):
-            print(self.name + ": Procesamos la información del sensor de luz en el puerto " + str(port))
-    
     # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
         for sensor in self.PROCESS_SENSORS:
-            self.PROCESS_SENSORS[sensor](self.sensor_ports[sensor])
+            self.PROCESS_SENSORS[sensor](self,self.sensor_ports[sensor])
     
     # Funcion para determinar el siguiente estado del Lider
     # TODO: Cambiar la maquina de estados cuando esten todos los sensores
