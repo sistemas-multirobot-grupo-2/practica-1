@@ -13,8 +13,8 @@ def main():
     
     try:
         robot = Robot(args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="leader",
-                        robot_sensors_list=["ultrasonic","ultrasonic"],
-                        robot_sensor_ports_list=[9,10])
+                        robot_sensors_list=["ultrasonic","light","light"],
+                        robot_sensor_ports_list=[9,10,11,])
         
         robot.run_main()
         # falta añadir multithreading

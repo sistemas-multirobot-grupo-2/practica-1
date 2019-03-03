@@ -23,6 +23,7 @@ EXECUTION_SUCCESSFUL    =  0
 # Roles
 LEADER      = 0
 FOLLOWER    = 1
+UNDEFINED   = -1
 
 # Diccionarios de Sensores
 # Permiten hacer la clase más genérica
@@ -36,7 +37,12 @@ def addSensors(list_of_sensors,self):
                 READ_SENSORS[count] = self.readUltraSensor
                 PROCESS_SENSORS[count] = self.processUltrasonicSensorData
                 print("Add " + sensor + " sensor")
-            count += 1
+                count += 1
+            elif(sensor == "light"):
+                READ_SENSORS[count] = self.readLightSensor
+                PROCESS_SENSORS[count] = self.processLightSensorData
+                print("Add " + sensor + " sensor")
+                count += 1
 
 ##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot
@@ -64,13 +70,15 @@ class Robot:
     def __init__(self,mode,bluetooth_path,robot_rol,robot_sensors_list,robot_sensor_ports_list):
         print("Init Class Robot")
         
-        if(mode == 'real_robot'):
+        self.mode = mode
+        
+        if(self.mode == 'real_robot'):
             print("Modo usando el Robot real")
             self.mobile_robot = AurigaPy(debug=False)
             self.mobile_robot.connect(bluetooth_path)
             self.error = EXECUTION_SUCCESSFUL
         
-        elif(mode == 'simulation'):
+        elif(self.mode == 'simulation'):
             print("Modo de Simulacion")
             self.error = EXECUTION_SUCCESSFUL
         
@@ -101,8 +109,13 @@ class Robot:
                 
     # Función específica para leer el sensor de ultrasonidos.    
     def readUltraSensor(self,port):
-        print("Leemos sensor ultrasonidos en el puerto " + str(port)) 
-    
+        if(self.mode == 'simulation'): 
+            print("Leemos sensor ultrasonidos en el puerto " + str(port))
+            
+    # Función específica para leer el sensor de luz
+    def readLightSensor(self,port):
+        if(self.mode == 'simulation'): 
+            print("Leemos sensor de luz en el puerto " + str(port)) 
     
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
     # los datos de todos los sensores instalados.
@@ -114,7 +127,14 @@ class Robot:
     # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
     # sensor de ultrasonidos.
     def processUltrasonicSensorData(self,port):
-        print("Procesamos la información del sensor de ultrasonidos en el puerto " + str(port))
+        if(self.mode == 'simulation'):
+            print("Procesamos la información del sensor de ultrasonidos en el puerto " + str(port))
+            
+    # Procesador específico para extaer información acerca de la presencia de una fuente lumínica en base a los datos del 
+    # sensor de luz.
+    def processLightSensorData(self,port):
+        if(self.mode == 'simulation'):
+            print("Procesamos la información del sensor de luz en el puerto " + str(port))
     
     # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
@@ -124,25 +144,8 @@ class Robot:
     # Funcion para determinar el siguiente estado del Lider
     def leaderFiniteStateMachine(self):
         print("Actualizamos la maquina de estado del lider")
-    
-    # Funcion para determinar el siguiente estado del Seguidor
-    def followerFiniteStateMachine(self):
-        print("Actualizamos la maquina de estados del seguidor")
-    
-    # Función para determinar qué tarea se va a llevar a cabo a partir de la información extraída a partir
-    # de los datos de los sensores y del rol del robot. 
-    def updateFiniteStateMachine(self):
         
-        if(self.rol == LEADER):
-            self.leaderFiniteStateMachine()
-        
-        elif(self.rol == FOLLOWER):
-            self.followerFiniteStateMachine()
-            
-        else:
-            self.state = STOP
-         
-        """if(self.st_meas):
+        if(self.st_meas):
             self.state = STOP
             
         elif(self.st_meas):
@@ -161,11 +164,50 @@ class Robot:
             self.state = PICK_OBJECT
         
         else:
-            self.state = UNDEFINED"""               
+            self.state = UNDEFINED
+    
+    # Funcion para determinar el siguiente estado del Seguidor
+    def followerFiniteStateMachine(self):
+        print("Actualizamos la maquina de estados del seguidor")
+        
+        if(self.st_meas):
+            self.state = STOP
+            
+        elif(self.st_meas):
+            self.state = MOVING_FORWARD_MAX
+            
+        elif(self.st_meas):
+            self.state = MOVING_FORWARD_PROPORTIONAL
+        
+        elif(self.st_meas):
+            self.state = MOVING_BACKWARD_MAX    
+            
+        elif(self.st_meas):
+            self.state = MOVING_BACKWARD_PROPORTIONAL    
+            
+        elif(self.st_meas):
+            self.state = PICK_OBJECT
+        
+        else:
+            self.state = UNDEFINED
+    
+    # Función para determinar qué tarea se va a llevar a cabo a partir de la información extraída a partir
+    # de los datos de los sensores y del rol del robot. 
+    def updateFiniteStateMachine(self):
+        
+        if(self.rol == LEADER):
+            self.leaderFiniteStateMachine()
+        
+        elif(self.rol == FOLLOWER):
+            self.followerFiniteStateMachine()
+            
+        else:
+            self.state = STOP               
             
     # Controlador específico para parar motores
     def controllerStop(self):
-        print("Calculamos la acción de control")
+        if(self.mode == 'simulation'):
+            print("Calculamos la acción de control")
                 
     # Función genérica que llama al controlador específico adecuado en función de la tarea
     # que se deba realizar. 
@@ -196,22 +238,25 @@ class Robot:
 
     # Función encargada de pasar a motores los comandos calculados por los controladores
     # este es el último punto antes de actuar sobre los motores,por lo que tenemos que 
-    # ser cuidadosos de no enviar valores indeseados... En este caso la máquina es pequeña
-    # pero imaginemos que vamos a acelerar un coche o un camión... hay que pensar bien
-    # antes de actuar!!
+    # ser cuidadosos de no enviar valores indeseados
     def execute(self):
-        print("Mandamos la acción de control a los actuadores")
+        if(self.mode == 'simulation'):
+            print("Mandamos la acción de control a los actuadores")
         
         self.error = EXECUTION_SUCCESSFUL
         
         if(self.state == UNDEFINED):
             self.error = EXECUTION_ERROR
+        if(self.mode == UNDEFINED):
+            self.error = EXECUTION_ERROR
 
     # Función encargada de refrescar la info para el usuario a intervalos de tiempo correctos
     def refreshUserInterface (self):
-        print("Mostramos la informacion util y los errores")
+        if(self.mode == 'simulation'):
+            print("Mostramos la informacion util y los errores")
 
-    
+    # Funcion Loop que hace la llamada a todas las funciones de lectura, procesado, maquina de estados,
+    # control y muestra de datos
     def run_main(self):
         addSensors(self.list_of_sensors,self)
         while True:
@@ -235,7 +280,5 @@ class Robot:
             self.refreshUserInterface()
             
             print("--------------------------")
-            time.sleep(2) #!!!!!!!!!!!!!!!! ELIMINAR DELAY !!!!!!!!!!!!!!!!#
-            
+            time.sleep(2) #!!!!!!!!!!!!!!!! ELIMINAR DELAY !!!!!!!!!!!!!!!!#  
         
-
