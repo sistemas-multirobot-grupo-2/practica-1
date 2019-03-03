@@ -16,7 +16,8 @@ MOVING_FORWARD_PROPORTIONAL       =  2
 MOVING_BACKWARD_MAX               =  3
 MOVING_BACKWARD_PROPORTIONAL      =  4
 PICK_OBJECT                       =  5
-UNDEFINED                         = -1
+EMERGENCY                         = -1
+UNDEFINED                         = -2
 
 
 # Codigos de Error
@@ -63,19 +64,23 @@ class Robot:
         self.name = name
         self.mode = mode
         
+        
         if(self.mode == 'real_robot'):
             print(self.name + ": Modo usando el Robot real")
             self.mobile_robot = AurigaPy(debug=False)
             self.mobile_robot.connect(bluetooth_path)
             self.error = EXECUTION_SUCCESSFUL
+            self.state = STOP
         
         elif(self.mode == 'simulation'):
             print(self.name + ": Modo de Simulacion")
             self.error = EXECUTION_SUCCESSFUL
+            self.state = STOP
         
         else:
             print(self.name + ": Modo no reconocido")
             self.error = EXECUTION_ERROR
+            self.state = EMERGENCY
         
         # Añadimos información de los structs de datos
         self.st_config = Config()
@@ -83,8 +88,6 @@ class Robot:
         self.st_information = sensors.Information()
         self.st_actions = controllers.Actions()
         
-        self.state = STOP
-        self.error = EXECUTION_SUCCESSFUL
         
         if robot_rol == "leader":
             self.rol = LEADER
@@ -92,6 +95,7 @@ class Robot:
             self.rol = FOLLOWER
         else:
             self.rol = UNDEFINED
+            self.state = EMERGENCY
             
         self.list_of_sensors = robot_sensors_list
         self.sensor_ports = robot_sensor_ports_list
@@ -136,6 +140,9 @@ class Robot:
         elif(self.st_meas):
             self.state = PICK_OBJECT
         
+        elif(self.st_meas):
+            self.state = EMERGENCY
+            
         else:
             self.state = UNDEFINED
     
@@ -162,6 +169,9 @@ class Robot:
         elif(self.st_meas):
             self.state = PICK_OBJECT
         
+        elif(self.st_meas):
+            self.state = EMERGENCY
+            
         else:
             self.state = UNDEFINED
     
@@ -176,7 +186,7 @@ class Robot:
             self.followerFiniteStateMachine()
             
         else:
-            self.state = STOP               
+            self.state = EMERGENCY               
             
                 
     # Función genérica que llama al controlador específico adecuado en función de la tarea
@@ -201,6 +211,9 @@ class Robot:
         elif(self.state == PICK_OBJECT):
             controllers.controllerStop(self)
         
+        elif(self.state == EMERGENCY):
+            controllers.controllerStop(self)
+            
         elif(self.state == UNDEFINED):
             controllers.controllerStop(self)
         
@@ -217,9 +230,9 @@ class Robot:
         
         self.error = EXECUTION_SUCCESSFUL
         
-        if(self.state == UNDEFINED):
+        if(self.state == EMERGENCY):
             self.error = EXECUTION_ERROR
-        if(self.mode == UNDEFINED):
+        elif(self.state == UNDEFINED):
             self.error = EXECUTION_ERROR
 
     # Función encargada de refrescar la info para el usuario a intervalos de tiempo correctos
