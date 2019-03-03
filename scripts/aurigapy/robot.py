@@ -25,6 +25,7 @@ LEADER      = 0
 FOLLOWER    = 1
 UNDEFINED   = -1
 
+# TODO: Añadir elementos cuando esten todos los sensores
 def addSensors(list_of_sensors,self):
         count = 0
         for sensor in list_of_sensors:
@@ -144,6 +145,7 @@ class Robot:
             self.PROCESS_SENSORS[sensor](self.sensor_ports[sensor])
     
     # Funcion para determinar el siguiente estado del Lider
+    # TODO: Cambiar la maquina de estados cuando esten todos los sensores
     def leaderFiniteStateMachine(self):
         print(self.name + ": Actualizamos la maquina de estado del lider")
         
@@ -169,6 +171,7 @@ class Robot:
             self.state = UNDEFINED
     
     # Funcion para determinar el siguiente estado del Seguidor
+    # TODO: Cambiar la maquina de estados cuando esten todos los sensores
     def followerFiniteStateMachine(self):
         print(self.name + ": Actualizamos la maquina de estados del seguidor")
         
@@ -213,6 +216,7 @@ class Robot:
                 
     # Función genérica que llama al controlador específico adecuado en función de la tarea
     # que se deba realizar. 
+    # TODO: Cambiar el selector del controlador cuando estén los controladores y estados
     def controller(self):
         if(self.state == STOP):
             self.controllerStop()
@@ -241,6 +245,7 @@ class Robot:
     # Función encargada de pasar a motores los comandos calculados por los controladores
     # este es el último punto antes de actuar sobre los motores,por lo que tenemos que 
     # ser cuidadosos de no enviar valores indeseados
+    # TODO: Añadir cuando esten hechos los controladores
     def execute(self):
         if(self.mode == 'simulation'):
             print(self.name + ": Mandamos la acción de control a los actuadores")
@@ -253,6 +258,7 @@ class Robot:
             self.error = EXECUTION_ERROR
 
     # Función encargada de refrescar la info para el usuario a intervalos de tiempo correctos
+    # TODO: Añadir la info util y cuando esté todo hecho
     def refreshUserInterface (self):
         if(self.mode == 'simulation'):
             print(self.name + ": Mostramos la informacion util y los errores")
