@@ -42,6 +42,11 @@ def addSensors(list_of_sensors,self):
                 self.PROCESS_SENSORS[count] = sensors.processLightSensorData
                 print("Add " + sensor + " sensor")
                 count += 1
+            elif(sensor == "line"):
+                self.READ_SENSORS[count] = sensors.readLineSensor
+                self.PROCESS_SENSORS[count] = sensors.processLineSensorData
+                print("Add " + sensor + " sensor")
+                count += 1
 
 ##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot

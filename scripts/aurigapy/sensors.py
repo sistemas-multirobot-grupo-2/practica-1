@@ -7,6 +7,10 @@
 from aurigapy import *
 import time
 
+#TODO: Añadir las funiones que vayan haciendo yoinel y josemi
+
+
+##------------------Lectura------------------##        
 
 # Función específica para leer el sensor de ultrasonidos.    
 def readUltraSensor(robot,port):
@@ -18,8 +22,15 @@ def readUltraSensor(robot,port):
 def readLightSensor(robot,port):
     if(robot.mode == 'simulation'): 
         print(robot.name + ": Leemos sensor de luz en el puerto " + str(port)) 
-        
-        
+
+# Función específica para leer el sensor de linea
+def readLineSensor(robot,port):
+    if(robot.mode == 'simulation'): 
+        print(robot.name + ": Leemos sensor de linea en el puerto " + str(port)) 
+                
+
+##------------------Procesado------------------##  
+      
 # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
 # sensor de ultrasonidos.
 def processUltrasonicSensorData(robot,port):
@@ -31,3 +42,8 @@ def processUltrasonicSensorData(robot,port):
 def processLightSensorData(robot,port):
     if(robot.mode == 'simulation'):
         print(robot.name + ": Procesamos la información del sensor de luz en el puerto " + str(port))
+
+# Procesador específico para extaer información acerca de la presencia de una linea.
+def processLineSensorData(robot,port):
+    if(robot.mode == 'simulation'):
+        print(robot.name + ": Procesamos la información del sensor de linea en el puerto " + str(port))

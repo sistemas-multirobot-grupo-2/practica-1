@@ -6,6 +6,8 @@
 from aurigapy import *
 import time
 
+#TODO: Añadir las funiones que vayan haciendo paco y abel
+
 
 # Controlador específico para parar motores
 def controllerStop(robot):
