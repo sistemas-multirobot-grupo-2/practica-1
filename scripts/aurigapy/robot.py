@@ -54,20 +54,6 @@ class Config:
     def __init__(self):
         print("Init Class Config")
 
-# Este struct contendrá la información raw de los sensores
-class Data:
-    def __init__(self):
-        print("Init Class Data")
-
-# Este struct contendrá la información procesada de los sensores
-class Information:
-    def __init__(self):
-        print("Init Class Information")
-        
-# Este struct contendrá las salidas que hay que aplicar a cada motor
-class Actions:
-    def __init__(self):
-        print("Init Class Actions")
         
 # Clase robot
 class Robot:
@@ -93,9 +79,9 @@ class Robot:
         
         # Añadimos información de los structs de datos
         self.st_config = Config()
-        self.st_meas = Data() 
-        self.st_information = Information()
-        self.st_actions = Actions()
+        self.st_meas = sensors.Data() 
+        self.st_information = sensors.Information()
+        self.st_actions = controllers.Actions()
         
         self.state = STOP
         self.error = EXECUTION_SUCCESSFUL

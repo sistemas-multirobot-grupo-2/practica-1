@@ -8,6 +8,10 @@ import time
 
 #TODO: Añadir las funiones que vayan haciendo paco y abel
 
+# Este struct contendrá las salidas que hay que aplicar a cada motor
+class Actions:
+    def __init__(self):
+        print("Init Class Actions")
 
 # Controlador específico para parar motores
 def controllerStop(robot):

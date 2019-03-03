@@ -9,6 +9,16 @@ import time
 
 #TODO: Añadir las funiones que vayan haciendo yoinel y josemi
 
+# Este struct contendrá la información raw de los sensores
+class Data:
+    def __init__(self):
+        print("Init Class Data")
+
+# Este struct contendrá la información procesada de los sensores
+class Information:
+    def __init__(self):
+        print("Init Class Information")
+        
 
 ##------------------Lectura------------------##        
 
