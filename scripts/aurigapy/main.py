@@ -12,20 +12,29 @@ def main():
     args = parser.parse_args()
     
     try:
-        robot = Robot(args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="leader",
+        robot1 = Robot(args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="leader",
                         robot_sensors_list=["ultrasonic","light","light"],
                         robot_sensor_ports_list=[9,10,11,])
         
-        robot.run_main()
-        # falta añadir multithreading
+        robot2 = Robot(args.mode,bluetooth_path="/dev/rfcomm1",robot_rol="follower",
+                        robot_sensors_list=["ultrasonic","light"],
+                        robot_sensor_ports_list=[9,10])
+        
+        
+        t1 = threading.Thread(target=robot1.run_main)
+        t2 = threading.Thread(target=robot2.run_main)
+        t1.start()
+        t2.start()
+        t1.join()
+        t2.join()
         
         
     except KeyboardInterrupt:
         print('\nCancelled by user. Bye!')    
     except:
         if(args.mode == 'real_robot'):
-            robot.mobile_robot.reset_robot()
-            robot.mobile_robot.close()
+            robot1.mobile_robot.reset_robot()
+            robot1.mobile_robot.close()
             
         print("Error: " + str(sys.exc_info()[0]))
         pass

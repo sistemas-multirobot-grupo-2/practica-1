@@ -25,22 +25,17 @@ LEADER      = 0
 FOLLOWER    = 1
 UNDEFINED   = -1
 
-# Diccionarios de Sensores
-# Permiten hacer la clase más genérica
-READ_SENSORS = {0:""}
-PROCESS_SENSORS = {0:""}
-
 def addSensors(list_of_sensors,self):
         count = 0
         for sensor in list_of_sensors:
             if(sensor == "ultrasonic"):
-                READ_SENSORS[count] = self.readUltraSensor
-                PROCESS_SENSORS[count] = self.processUltrasonicSensorData
+                self.READ_SENSORS[count] = self.readUltraSensor
+                self.PROCESS_SENSORS[count] = self.processUltrasonicSensorData
                 print("Add " + sensor + " sensor")
                 count += 1
             elif(sensor == "light"):
-                READ_SENSORS[count] = self.readLightSensor
-                PROCESS_SENSORS[count] = self.processLightSensorData
+                self.READ_SENSORS[count] = self.readLightSensor
+                self.PROCESS_SENSORS[count] = self.processLightSensorData
                 print("Add " + sensor + " sensor")
                 count += 1
 
@@ -105,6 +100,12 @@ class Robot:
         self.list_of_sensors = robot_sensors_list
         self.sensor_ports = robot_sensor_ports_list
         
+        # Diccionarios de Sensores
+        # Permiten hacer la clase más genérica
+        self.READ_SENSORS = {0:""}
+        self.PROCESS_SENSORS = {0:""}
+
+        
         
                 
     # Función específica para leer el sensor de ultrasonidos.    
@@ -120,8 +121,8 @@ class Robot:
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
     # los datos de todos los sensores instalados.
     def readSensors(self):
-        for sensor in READ_SENSORS:
-            READ_SENSORS[sensor](self.sensor_ports[sensor])
+        for sensor in self.READ_SENSORS:
+            self.READ_SENSORS[sensor](self.sensor_ports[sensor])
 
   
     # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
@@ -138,8 +139,8 @@ class Robot:
     
     # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
-        for sensor in READ_SENSORS:
-            PROCESS_SENSORS[sensor](self.sensor_ports[sensor])
+        for sensor in self.PROCESS_SENSORS:
+            self.PROCESS_SENSORS[sensor](self.sensor_ports[sensor])
     
     # Funcion para determinar el siguiente estado del Lider
     def leaderFiniteStateMachine(self):
