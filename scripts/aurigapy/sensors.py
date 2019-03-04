@@ -48,11 +48,19 @@ Funcion para leer el sensor de distancia (ultrasonidos)
     if robot.mode == 'simulation': #Simulacion
         print(robot.name + ": Leemos sensor ultrasonidos en el puerto " + str(port))
     elif robot.mode == 'real_robot': #Robot real
-        robot.st_data.ultrasensor_distance = robot.mobile_robot.get_ultrasonic_reading(port)
+        #Comprobar que se ha cumplido el tiempo mínimo para consultar el sensor
+        if robot.current_time_ultrasonic - robot.previous_time_ultrasonic > robot.st_config.ultrasonic_sensor_reading_period_in_millis:
+            robot.st_data.ultrasensor_distance = robot.mobile_robot.get_ultrasonic_reading(port) #Actualizar medida anterior
+            robot.previous_time_ultrasonic = time.time()*1000 #Actualizar tiempo de "ultima medida"
+        else:
+            error = True #Indicar error porque NO se ha podido leer la distancia (ha pasado demasiado poco tiempo)
     else: #Cualquier otro caso -> ERROR
         robot.st_data.ultrasensor_distance = IMPOSSIBLE_DISTANCE
         error = True
         
+    return error #Devolver la variable que indica si ha habido algun fallo
+      
+  
 
 # Función específica para leer el sensor de luz
 def readLightSensor(robot,port):
@@ -60,7 +68,7 @@ def readLightSensor(robot,port):
 Funcion para leer el sensor de luz
 
 :param self: Referencia a la instancia desde la que se llama a la funcion
-:param port: Puerto donde esta conectado el sensor de luz.
+:param port: Puerto donde esta conectado el sensor de luz
 
 :return: True si no ha habido ningun problema. False en cualquier otro caso (ERROR)
 """
@@ -78,7 +86,7 @@ Funcion para leer el sensor de luz
     else: #Cualquier otro caso -> ERROR
         error = True
         
-    return error
+    return error #Devolver la variable que indica si ha habido algun fallo
 
 
 # Función específica para leer el sensor de linea
@@ -87,7 +95,7 @@ def readLineSensor(robot,port):
 Funcion para leer el sensor de linea
 
 :param robot: Referencia a la instancia desde la que se llama a la funcion
-:param port: Puerto donde esta conectado el sensor de linea.
+:param port: Puerto donde esta conectado el sensor de linea
 
 :return: True si no ha habido ningun problema. False en cualquier otro caso (ERROR)
 """
@@ -102,7 +110,7 @@ Funcion para leer el sensor de linea
         #Si se recibe un valor no-valido
         if robot.st_data.line_detection<0 or robot.st_data.line_detection>3:
             error = True #Indicar fallo
-    else:#Cualquier otro caso -> ERROR
+    else: #Cualquier otro caso -> ERROR
         error = True
         
     return error #Devolver la variable que indica si ha habido algun fallo
