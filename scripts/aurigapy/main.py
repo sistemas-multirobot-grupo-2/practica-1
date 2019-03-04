@@ -34,7 +34,9 @@ def main():
     except:
         if(args.mode == 'real_robot'):
             robot1.mobile_robot.reset_robot()
+            robot2.mobile_robot.reset_robot()
             robot1.mobile_robot.close()
+            robot2.mobile_robot.close()
             
         print("Error: " + str(sys.exc_info()[0]))
         pass

@@ -7,6 +7,8 @@ from aurigapy import *
 import time
 
 #TODO: Añadir las funiones que vayan haciendo paco y abel
+#Todo lo que hay hasta el momento son EJEMPLOS (cambiad lo que os parezca)
+
 
 # Este struct contendrá las salidas que hay que aplicar a cada motor
 class Actions:
@@ -16,6 +18,9 @@ class Actions:
         self.movement_motors_pwm = 0
         self.command = "forward"
         self.tool_motor_pwm = 0
+
+
+##------------------CONTROLADORES------------------##        
 
 # Controlador específico para parar motores
 def controllerStop(robot):

@@ -8,24 +8,38 @@ from aurigapy import *
 import time
 
 #TODO: Añadir las funiones que vayan haciendo yoinel y josemi
+#Todo lo que hay hasta el momento son EJEMPLOS (cambiad lo que os parezca)
+
+
+##-----Constantes y variables globales-----##
+
+#Ultrasonidos
+IMPOSSIBLE_DISTANCE = -1.0
+
 
 # Este struct contendrá la información raw de los sensores
 class Data:
     def __init__(self):
         print("Init Class Data")
+        self.ultrasensor_distance = 0
 
 # Este struct contendrá la información procesada de los sensores
 class Information:
     def __init__(self):
         print("Init Class Information")
         
-
 ##------------------Lectura------------------##        
 
 # Función específica para leer el sensor de ultrasonidos.    
 def readUltraSensor(robot,port):
     if(robot.mode == 'simulation'): 
         print(robot.name + ": Leemos sensor ultrasonidos en el puerto " + str(port))
+    
+    elif(robot.mode == 'real_robot'):
+        robot.st_data.ultrasensor_distance = robot.mobile_robot.get_ultrasonic_reading(port)
+    
+    else:
+        robot.st_data.ultrasensor_distance = IMPOSSIBLE_DISTANCE
         
 
 # Función específica para leer el sensor de luz
