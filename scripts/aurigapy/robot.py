@@ -54,7 +54,9 @@ def addSensors(list_of_sensors,self):
 class Config:
     def __init__(self):
         print("Init Class Config")
-
+        self.max_movement_motors_pwm = 255
+        self.ultrasonic_sensor_reading_period_in_millis = 150
+        self.user_interface_refresh_period_in_millis = 500
         
 # Clase robot
 class Robot:
