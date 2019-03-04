@@ -29,25 +29,6 @@ LEADER      =  0
 FOLLOWER    =  1
 UNDEFINED   = -1
 
-# TODO: Añadir elementos cuando esten todos los sensores
-def addSensors(list_of_sensors,self):
-        count = 0
-        for sensor in list_of_sensors:
-            if(sensor == "ultrasonic"):
-                self.READ_SENSORS[count] = sensors.readUltraSensor
-                self.PROCESS_SENSORS[count] = sensors.processUltrasonicSensorData
-                print("Add " + sensor + " sensor")
-                count += 1
-            elif(sensor == "light"):
-                self.READ_SENSORS[count] = sensors.readLightSensor
-                self.PROCESS_SENSORS[count] = sensors.processLightSensorData
-                print("Add " + sensor + " sensor")
-                count += 1
-            elif(sensor == "line"):
-                self.READ_SENSORS[count] = sensors.readLineSensor
-                self.PROCESS_SENSORS[count] = sensors.processLineSensorData
-                print("Add " + sensor + " sensor")
-                count += 1
 
 ##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot
@@ -106,7 +87,28 @@ class Robot:
         # Permiten hacer la clase más genérica
         self.READ_SENSORS = {0:""}
         self.PROCESS_SENSORS = {0:""}
+        
 
+    # TODO: Añadir elementos cuando esten todos los sensores
+    def addSensors(self):
+        count = 0
+        for sensor in self.list_of_sensors:
+            if(sensor == "ultrasonic"):
+                self.READ_SENSORS[count] = sensors.readUltraSensor
+                self.PROCESS_SENSORS[count] = sensors.processUltrasonicSensorData
+                print(self.name +": Add " + sensor + " sensor, port: " + str(self.sensor_ports[count]))
+                count += 1
+            elif(sensor == "light"):
+                self.READ_SENSORS[count] = sensors.readLightSensor
+                self.PROCESS_SENSORS[count] = sensors.processLightSensorData
+                print(self.name +": Add " + sensor + " sensor, port: " + str(self.sensor_ports[count]))
+                count += 1
+            elif(sensor == "line"):
+                self.READ_SENSORS[count] = sensors.readLineSensor
+                self.PROCESS_SENSORS[count] = sensors.processLineSensorData
+                print(self.name +": Add " + sensor + " sensor, port: " + str(self.sensor_ports[count]))
+                count += 1
+                
     
     # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
     # los datos de todos los sensores instalados.
@@ -246,7 +248,7 @@ class Robot:
     # Funcion Loop que hace la llamada a todas las funciones de lectura, procesado, maquina de estados,
     # control y muestra de datos
     def run_main(self):
-        addSensors(self.list_of_sensors,self)
+        self.addSensors()
         
         while True:
             # Leemos los sensores
