@@ -91,6 +91,13 @@ class Robot:
 
     # TODO: Añadir elementos cuando esten todos los sensores
     def addSensors(self):
+        """
+        Funcion para añadir los sensores del robot
+
+        :param self: Referencia a la instancia desde la clase
+        
+        :return: void
+        """
         count = 0
         for sensor in self.list_of_sensors:
             if(sensor == "ultrasonic"):
@@ -109,21 +116,39 @@ class Robot:
                 print(self.name +": Add " + sensor + " sensor, port: " + str(self.sensor_ports[count]))
                 count += 1
                 
-    
-    # Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
-    # los datos de todos los sensores instalados.
     def readSensors(self):
+        """
+        Función genérica que debe ir llamando a cada una de las funciones específicas para rellenar el struct de "Data" con 
+        los datos de todos los sensores instalados.
+        
+        :param self: Referencia a la instancia desde la clase
+        
+        :return: void
+        """
         for sensor in self.READ_SENSORS:
             self.READ_SENSORS[sensor](self,self.sensor_ports[sensor])
 
-    # Función para extraer la información a partir de los datos 'en crudo'.
     def processData(self):
+        """
+        Función genérica que debe ir llamando a cada una de las funciones específicas 
+        para extraer la información a partir de los datos 'en crudo'.
+        
+        :param self: Referencia a la instancia desde la clase
+        
+        :return: void
+        """
         for sensor in self.PROCESS_SENSORS:
             self.PROCESS_SENSORS[sensor](self,self.sensor_ports[sensor])
     
-    # Funcion para determinar el siguiente estado del Lider
     # TODO: Cambiar la maquina de estados cuando esten todos los sensores
     def leaderFiniteStateMachine(self):
+        """
+        Funcion para determinar el siguiente estado del Lider 
+        
+        :param self: Referencia a la instancia desde la clase
+        
+        :return: void
+        """
         print(self.name + ": Actualizamos la maquina de estado del lider")
         
         if(self.st_meas):
@@ -150,9 +175,15 @@ class Robot:
         else:
             self.state = UNDEFINED
     
-    # Funcion para determinar el siguiente estado del Seguidor
     # TODO: Cambiar la maquina de estados cuando esten todos los sensores
     def followerFiniteStateMachine(self):
+        """
+        Funcion para determinar el siguiente estado del Seguidor 
+        
+        :param self: Referencia a la instancia desde la clase
+        
+        :return: void
+        """
         print(self.name + ": Actualizamos la maquina de estados del seguidor")
         
         if(self.st_meas):
@@ -179,10 +210,14 @@ class Robot:
         else:
             self.state = UNDEFINED
     
-    # Función para determinar qué tarea se va a llevar a cabo a partir de la información extraída a partir
-    # de los datos de los sensores y del rol del robot. 
     def updateFiniteStateMachine(self):
+        """
+        Funcion para determinar la maquina de estados a utilizar
         
+        :param self: Referencia a la instancia desde la clase
+        
+        :return void
+        """
         if(self.rol == LEADER):
             self.leaderFiniteStateMachine()
         
@@ -192,11 +227,16 @@ class Robot:
         else:
             self.state = EMERGENCY               
             
-                
-    # Función genérica que llama al controlador específico adecuado en función de la tarea
-    # que se deba realizar. 
     # TODO: Cambiar el selector del controlador cuando estén los controladores y estados
     def controller(self):
+        """
+        Función genérica que llama al controlador específico adecuado en función de la tarea
+        que se deba realizar.
+        
+        :param self: Referencia a la instancia desde la clase
+        
+        :return void
+        """
         if(self.state == STOP):
             controllers.controllerStop(self)
             
@@ -224,11 +264,17 @@ class Robot:
         else:
             controllers.controllerStop(self)       
 
-    # Función encargada de pasar a motores los comandos calculados por los controladores
-    # este es el último punto antes de actuar sobre los motores,por lo que tenemos que 
-    # ser cuidadosos de no enviar valores indeseados
     # TODO: Añadir cuando esten hechos los controladores
     def execute(self):
+        """
+        Función encargada de pasar a motores los comandos calculados por los controladores
+        este es el último punto antes de actuar sobre los motores,por lo que tenemos que
+        ser cuidadosos de no enviar valores indeseados
+        
+        :param self: Referencia a la instancia desde la clase
+        
+        :return void
+        """
         if(self.mode == 'simulation'):
             print(self.name + ": Mandamos la acción de control a los actuadores")
         
@@ -239,15 +285,27 @@ class Robot:
         elif(self.state == UNDEFINED):
             self.error = EXECUTION_ERROR
 
-    # Función encargada de refrescar la info para el usuario a intervalos de tiempo correctos
     # TODO: Añadir la info util y cuando esté todo hecho
     def refreshUserInterface (self):
+        """
+        Función encargada de refrescar la info para el usuario a intervalos de tiempo correctos
+        
+        :param self: Referencia a la instancia desde la clase
+        
+        :return void
+        """
         if(self.mode == 'simulation'):
             print(self.name + ": Mostramos la informacion util y los errores")
 
-    # Funcion Loop que hace la llamada a todas las funciones de lectura, procesado, maquina de estados,
-    # control y muestra de datos
     def run_main(self):
+        """
+        Funcion Loop que hace la llamada a todas las funciones de lectura, procesado, maquina de estados,
+        control y muestra de datos
+         
+        :param self: Referencia a la instancia desde la clase
+        
+        :return void
+        """
         self.addSensors()
         
         while True:
