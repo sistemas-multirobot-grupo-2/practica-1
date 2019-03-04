@@ -33,15 +33,25 @@ class Information:
 ##------------------Lectura------------------##        
 
 # Función específica para leer el sensor de ultrasonidos.    
-def readUltraSensor(robot,port):
-    if(robot.mode == 'simulation'): 
+def readUltraSensor(robot, port):
+"""
+Funcion para leer el sensor de distancia (ultrasonidos)
+
+:param self: Referencia a la instancia desde la que se llama a la funcion
+:param port: Puerto donde esta conectado el sensor de distancia
+
+:return: True si no ha habido ningun problema. False en cualquier otro caso (ERROR)
+"""
+    error = False #Variable que contiene el valor de retorno
+
+    #Actuar segun el modo en el que este el robot
+    if robot.mode == 'simulation': #Simulacion
         print(robot.name + ": Leemos sensor ultrasonidos en el puerto " + str(port))
-    
-    elif(robot.mode == 'real_robot'):
+    elif robot.mode == 'real_robot': #Robot real
         robot.st_data.ultrasensor_distance = robot.mobile_robot.get_ultrasonic_reading(port)
-    
-    else:
+    else: #Cualquier otro caso -> ERROR
         robot.st_data.ultrasensor_distance = IMPOSSIBLE_DISTANCE
+        error = True
         
 
 # Función específica para leer el sensor de luz
@@ -56,15 +66,18 @@ Funcion para leer el sensor de luz
 """
     error = False #Variable que contiene el valor de retorno
     
-    if robot.mode == 'simulation':
+    #Actuar segun el modo en el que este el robot
+    if robot.mode == 'simulation': #Simulacion
         print(robot.name + ": Procesamos la información del sensor de luz en el puerto " + str(port))
-    else:
+    elif robot.mode == 'real_robot': #Robot real
         robot.st_data.read_ligth = robot.get_light_sensor_onboard(port) #Leer datos del sensor
 
         #Comprobar si la lectura da un valor logico
         if robot.st_data.read_ligth<1 or robot.st_data.read_ligth>1023:
             error = True
-    
+    else: #Cualquier otro caso -> ERROR
+        error = True
+        
     return error
 
 
@@ -80,16 +93,19 @@ Funcion para leer el sensor de linea
 """
     error = False #Variable que contiene el valor de retorno
     
-    if robot.mode == 'simulation':
+    #Actuar segun el modo en el que este el robot
+    if robot.mode == 'simulation': #Simulacion
         print(robot.name + ": Procesamos la información del sensor de linea en el puerto " + str(port))
-    else: 
+    elif robot.mode == 'real_robot': #Robot real
         robot.st_data.line_detection = robot.get_line_sensor(port) #Leer informacion -> 0-los 2 on; 1-izq on; 2-der on; 3-ninguno
         
         #Si se recibe un valor no-valido
         if robot.st_data.line_detection<0 or robot.st_data.line_detection>3:
             error = True #Indicar fallo
+    else:#Cualquier otro caso -> ERROR
+        error = True
         
-        return error #Devolver la variable que indica si ha habido algun fallo
+    return error #Devolver la variable que indica si ha habido algun fallo
                 
 
 ##------------------Procesado------------------##  
