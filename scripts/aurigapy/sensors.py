@@ -19,12 +19,17 @@ MIN_ULTRA_VALUE = 0 #Minimum detectable value for the distance sensor
 MAX_ULTRA_VALUE = 400 #Maximum detectable value for the distance sensor
 NEAR_OBJECT_THRESHOLD = 10 #An object closer than this will be considered a "near object"
 FAR_OBJECT_THRESHOLD = 250 #An object closer than this will be considered a "far object"
+NO_OBJECT_DETECTED = 0
+NEAR_OBJECT_DETECTED = 1
+FAR_OBJECT_DETECTED = 2
 
 #Luz
 MIN_LIGHT_VALUE = 1 #Minimum detectable value for the light sensor
 MIN_LIGHT_VALUE = 1023 #Maximum detectable value for the light sensor
 LIGHT_THRESHOLD = 700 #Threshold over what is considered a light indicator is present
-
+UNKNOWN_LIGHT_DETECTED = 0
+HIGH_LIGHT_DETECTED = 1
+LOW_LIGHT_DETECTED = 2
 
 # Este struct contendrá la información raw de los sensores
 class Data:
@@ -150,11 +155,11 @@ def processUltrasonicSensorData(robot,port):
         if robot.st_data.ultrasensor_distance < MIN_ULTRA_VALUE or robot.st_data.ultrasensor_distance > MAX_ULTRA_VALUE:
             error = True
         elif robot.st_data.ultrasensor_distance < NEAR_OBJECT_THRESHOLD:
-            robot.st_information.ultrasensor_detection = "NEAR_OBJECT_DETECTED"
+            robot.st_information.ultrasensor_detection = NEAR_OBJECT_DETECTED #NEAR_OBJECT_DETECTED=1
         elif robot.st_data.ultrasensor_distance < FAR_OBJECT_THRESHOLD:
-            robot.st_information.ultrasensor_detection = "FAR_OBJECT_DETECTED"
+            robot.st_information.ultrasensor_detection = FAR_OBJECT_DETECTED #FAR_OBJECT_DETECTED=2
         else:
-            robot.st_information.ultrasensor_detection = "NO_OBJECT_DETECTED"
+            robot.st_information.ultrasensor_detection = NO_OBJECT_DETECTED #NO_OBJECT_DETECTED=0
     else: #Cualquier otro caso -> ERROR
         error = True
         
@@ -179,12 +184,12 @@ def processLightSensorData(robot,port):
         print(robot.name + ": Procesamos la información del sensor de luz en el puerto " + str(port))
     elif robot.mode == 'real_robot': #Robot real
         if robot.st_data.read_ligth < MIN_LIGHT_VALUE or robot.st_data.read_ligth > MAX_LIGHT_VALUE:
-            robot.st_information.light_detection = "UNKNOWN"
+            robot.st_information.light_detection = UNKNOWN_LIGHT_DETECTED #UNKNOWN_LIGHT_DETECTED=0
             error = True
-        elif robot.st_data.read_ligth < LIGHT_THRESHOLD:
-            robot.st_information.light_detection = "LOW"
+        elif robot.st_data.read_ligth > LIGHT_THRESHOLD:
+            robot.st_information.light_detection = HIGH_LIGHT_DETECTED #HIGH_LIGHT_DETECTED=1
         else:
-            robot.st_information.light_detection = "HIGH"
+            robot.st_information.light_detection = LOW_LIGHT_DETECTED #LOW_LIGHT_DETECTED=2
     else: #Cualquier otro caso -> ERROR
         error = True
         
