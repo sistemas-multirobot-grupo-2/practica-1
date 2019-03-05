@@ -157,16 +157,16 @@ class Robot:
         elif(self.st_meas):#MOVING_FORWARD_MAX
             self.state = MOVING_FORWARD_MAX
             
-        elif(self.st_meas):#NO NECESARIO
+        elif(self.st_meas):#MOVING_FORWARD_PROPORTIONAL
             self.state = MOVING_FORWARD_PROPORTIONAL
         
         elif(self.st_meas):#MOVING_BACKWARD_MAX    
             self.state = MOVING_BACKWARD_MAX    
             
-        elif(self.st_meas):#NO NECESARIO
+        elif(self.st_meas):#MOVING_BACKWARD_PROPORTIONAL
             self.state = MOVING_BACKWARD_PROPORTIONAL    
             
-        elif(self.st_meas):#NO NECESARIO
+        elif(self.st_meas):#PICK_OBJECT
             self.state = PICK_OBJECT
         
         elif(self.st_meas):#EMERGENCY
@@ -201,8 +201,8 @@ class Robot:
         elif(self.st_meas):#MOVING_BACKWARD_PROPORTIONAL
             self.state = MOVING_BACKWARD_PROPORTIONAL    
             
-        elif(self.st_meas):#PICK_OBJECT
-            self.state = PICK_OBJECT
+        #elif(self.st_meas):#PICK_OBJECT
+            #self.state = PICK_OBJECT
         
         elif(self.st_meas):#EMERGENCY
             self.state = EMERGENCY
