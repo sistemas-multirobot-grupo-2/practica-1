@@ -156,32 +156,42 @@ class Robot:
             # Detectar objetivo a mover/obstáculo
             # Follower nos pierde
             # Emergencia
+            # if(self.READ_SENSOR[ultrasonidos y luz] == objeto_a_distancia_casi_nula or Follower_signal = 0 or parada_emergencia): #STOP
+
         elif(self.st_meas):#MOVING_FORWARD_MAX
             self.state = MOVING_FORWARD_MAX
-            # Movemos motores al máx (Se supone que no saliéndose de la línea)
+            # Movemos motores al máx (Se supone que no saliéndose de la línea y lo hace moving)
             # Comprobamos que estamos rectos
+                
         elif(self.st_meas):#MOVING_FORWARD_PROPORTIONAL
             self.state = MOVING_FORWARD_PROPORTIONAL
             # Nos movemos adecuando la velocidad para llegar frenando
-            # Activamos si nos salimos de una curva
+            # Activamos si nos salimos de una curva (creo que auto)
+            # if(self.READ_SENSOR[ultrasonidos/luz] == objeto_a_distancia):
         elif(self.st_meas):#MOVING_BACKWARD_MAX    
             self.state = MOVING_BACKWARD_MAX    
             # Movemos motores al máx (Se supone que no saliéndose de la línea)
             # Comprobamos que estamos rectos
-            # Activamos si hay obstáculo inesperado
+            # Activamos si hay obstáculo inesperado?
+            # if(self.READ_SENSOR[pinza/ultrasonidos] == objeto_cogido and luz_de_cogida):
+
         elif(self.st_meas):#MOVING_BACKWARD_PROPORTIONAL
             self.state = MOVING_BACKWARD_PROPORTIONAL    
-            # Nos movemos adecuando la velocidad para llegar frenando
-            # Activamos si nos salimos de una curva/necesitamos ir hacia atrás
+            # Nos movemos adecuando la velocidad para llegar frenando atrás
+            # Activamos si nos salimos de una curva/necesitamos ir hacia atrás o acercarnos al esclavo
         elif(self.st_meas):#PICK_OBJECT
             self.state = PICK_OBJECT
             # Detectamos objeto a dist segura y no nos movemos
             # Avanzamos hasta el objeto y cerramos pinza
+            # if(self.READ_SENSOR[ultrasonidos/luz] == objeto_a_distancia_nula and orden_de_coger):
+
         elif(self.st_meas):#EMERGENCY
             self.state = EMERGENCY
             # Objeto que no es objetivo
             # perdemos señal de esclavo
             # no encontramos línea
+            # if(self.READ_SENSOR[lineas] == ninguna_linea or slave_offline):
+
         else: #ERROR
             self.state = UNDEFINED
     
