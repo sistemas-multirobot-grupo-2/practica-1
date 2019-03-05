@@ -151,28 +151,28 @@ class Robot:
         """
         print(self.name + ": Actualizamos la maquina de estado del lider")
         
-        if(self.st_meas):
+        if(self.st_meas): #STOP
             self.state = STOP
             
-        elif(self.st_meas):
+        elif(self.st_meas):#MOVING_FORWARD_MAX
             self.state = MOVING_FORWARD_MAX
             
-        elif(self.st_meas):
+        elif(self.st_meas):#NO NECESARIO
             self.state = MOVING_FORWARD_PROPORTIONAL
         
-        elif(self.st_meas):
+        elif(self.st_meas):#MOVING_BACKWARD_MAX    
             self.state = MOVING_BACKWARD_MAX    
             
-        elif(self.st_meas):
+        elif(self.st_meas):#NO NECESARIO
             self.state = MOVING_BACKWARD_PROPORTIONAL    
             
-        elif(self.st_meas):
+        elif(self.st_meas):#NO NECESARIO
             self.state = PICK_OBJECT
         
-        elif(self.st_meas):
+        elif(self.st_meas):#EMERGENCY
             self.state = EMERGENCY
             
-        else:
+        else: #ERROR
             self.state = UNDEFINED
     
     # TODO: Cambiar la maquina de estados cuando esten todos los sensores
@@ -186,28 +186,28 @@ class Robot:
         """
         print(self.name + ": Actualizamos la maquina de estados del seguidor")
         
-        if(self.st_meas):
+        if(self.st_meas): #STOP
             self.state = STOP
             
-        elif(self.st_meas):
+        elif(self.st_meas):#MOVING_FORWARD_MAX
             self.state = MOVING_FORWARD_MAX
             
-        elif(self.st_meas):
+        elif(self.st_meas):#MOVING_FORWARD_PROPORTIONAL
             self.state = MOVING_FORWARD_PROPORTIONAL
         
-        elif(self.st_meas):
+        elif(self.st_meas):#MOVING_BACKWARD_MAX    
             self.state = MOVING_BACKWARD_MAX    
             
-        elif(self.st_meas):
+        elif(self.st_meas):#MOVING_BACKWARD_PROPORTIONAL
             self.state = MOVING_BACKWARD_PROPORTIONAL    
             
-        elif(self.st_meas):
+        elif(self.st_meas):#PICK_OBJECT
             self.state = PICK_OBJECT
         
-        elif(self.st_meas):
+        elif(self.st_meas):#EMERGENCY
             self.state = EMERGENCY
             
-        else:
+        else: #ERROR
             self.state = UNDEFINED
     
     def updateFiniteStateMachine(self):
