@@ -11,9 +11,9 @@ Los sistemas utilizados son 2 robots tipo mBot Ranger de Makeblock con las sigui
 + Sensor de luz (LDR)
 + Giroscopio
 + Emisor de sonido
-+ Sensor de teperatura
++ Sensor de temperatura
 
-Adicionalmente un robot dispone de una pinza y otro de una brújula y un sensor de ultrasonido. Para las **comunicaciontes**, tilizaremos el protocolo de comunicaciones Bluetooth para comunicar un PC con los robots y los robots entre sí.
+Adicionalmente un robot dispone de una pinza y otro de una brújula y un sensor de ultrasonido. Para las **comunicaciontes**, utilizaremos el protocolo de comunicaciones Bluetooth para enlazar un PC con los robots y los robots entre sí.
 
 ## *Compilación* de la documentación
 Para generar la documentación hemos utilizado **Sphinx**, que es capaz de generar documentación en html y LaTeX (entre otros) a partir de archivos en *reStructuredText*. Para poder leerla, basta con clonar este repositorio con:
