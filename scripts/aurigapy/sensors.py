@@ -81,6 +81,7 @@ def readUltraSensor(robot, port):
             
             if(robot.st_meas.ultrasensor_distance < MIN_ULTRASONIC_VALUE or robot.st_meas.ultrasensor_distance > MAX_ULTRASONIC_VALUE):
                 robot.st_meas.ultrasensor_distance = IMPOSSIBLE_DISTANCE
+                error = True #Indicar error
             
         else:
             robot.st_meas.ultrasensor_distance = IMPOSSIBLE_DISTANCE
@@ -88,7 +89,8 @@ def readUltraSensor(robot, port):
     else: #Cualquier otro caso -> ERROR
         robot.st_meas.ultrasensor_distance = IMPOSSIBLE_DISTANCE
         error = True
-        
+    
+    print ("[*] Datos de distancia: " + string(robot.st_meas.ultrasensor_distance))
     return error #Devolver la variable que indica si ha habido algun fallo
       
   
@@ -115,12 +117,13 @@ def readLightSensor(robot,port):
         # sensor si la lectura da un valor ilogico
         if(robot.st_meas.light_sensor_value < MIN_LIGHT_VALUE or robot.st_meas.read_ligth > MAX_LIGHT_VALUE):
             robot.st_meas.light_sensor_value = IMPOSSIBLE_LIGHT_VALUE
-            error = True
+            error = True #Indicar error
             
     else: #Cualquier otro caso -> ERROR
         robot.st_meas.light_sensor_value = IMPOSSIBLE_LIGHT_VALUE
         error = True
-        
+    
+    print ("[*] Datos de luz: " + string(robot.st_meas.light_sensor_value))
     return error #Devolver la variable que indica si ha habido algun fallo
 
 
@@ -144,7 +147,7 @@ def readLineSensor(robot,port):
         robot.st_meas.line_detection = robot.get_line_sensor(port) #Leer informacion -> 0-los 2 on; 1-izq on; 2-der on; 3-ninguno    
         
         #Si se recibe un valor no-valido
-        if robot.st_meas.line_detection<0 or robot.st_information.line_detection>3:
+        if robot.st_meas.line_detection<BOTH_LINES_DETECTED or robot.st_information.line_detection>ANY_LINES_DETECTED:
             robot.st_meas.line_detection = UNKNOWN_LINE_VALUE
             error = True #Indicar fallo
             
@@ -152,6 +155,7 @@ def readLineSensor(robot,port):
         robot.st_meas.line_detection = UNKNOWN_LINE_VALUE
         error = True
         
+    print ("[*] Datos/info de linea: " + string(robot.st_meas.line_detection))
     return error #Devolver la variable que indica si ha habido algun fallo
                 
 
@@ -193,6 +197,7 @@ def processUltrasonicSensorData(robot,port):
         error = True
         robot.st_meas.ultrasensor_detection = UNKNOWN_OBJECT_DETECTED
         
+    print ("[*] Informacion de distancia: " + string(robot.st_information.ultrasensor_detection))
     return error
         
     
@@ -236,18 +241,12 @@ def processLightSensorData(robot,port):
         robot.st_information.light_detection = UNKNOWN_LIGHT_DETECTED
         error = True
         
+    print ("[*] Informacion de distancia: " + string(robot.st_information.light_detection))
     return error
 
-        
+"""      
 # Procesador específico para extaer información acerca de la presencia de una linea.
 def processLineSensorData(robot,port):
-    """
-    Funcion para extaer informacion acerca de la presencia de obstaculos en base a los datos del sensor de linea
-
-    :param robot: Referencia a la instancia desde la que se llama a la funcion
-    :param port: Puerto donde esta conectado el sensor de linea
-
-    :return: True si no ha habido ningun problema. False en cualquier otro caso (ERROR)
-    """
     if robot.mode == 'simulation':
         print(robot.name + ": Procesamos la información del sensor de linea en el puerto " + str(port))
+"""
