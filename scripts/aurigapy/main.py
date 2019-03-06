@@ -12,21 +12,21 @@ def main():
     args = parser.parse_args()
     
     try:
-        robot1 = Robot(name="Robot1",mode=args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="leader",
+        robot1 = Robot(name="Robot1",mode=args.mode,bluetooth_path="/dev/rfcomm1",robot_rol="leader",
                         robot_sensors_list=["light","line"],
-                        robot_sensor_ports_list=[9,11])
-        
-        robot2 = Robot(name="Robot2",mode=args.mode,bluetooth_path="/dev/rfcomm1",robot_rol="follower",
+                        robot_sensor_ports_list=[1,9])
+        """
+        robot2 = Robot(name="Robot2",mode=args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="follower",
                         robot_sensors_list=["ultrasonic","light","light","line"],
                         robot_sensor_ports_list=[9,10,11,12])
-        
+        """
         
         t1 = threading.Thread(target=robot1.run_main)
-        t2 = threading.Thread(target=robot2.run_main)
+        #t2 = threading.Thread(target=robot2.run_main)
         t1.start()
-        t2.start()
+        #t2.start()
         t1.join()
-        t2.join()
+        #t2.join()
         
         
     except KeyboardInterrupt:
@@ -34,9 +34,9 @@ def main():
     except:
         if(args.mode == 'real_robot'):
             robot1.mobile_robot.reset_robot()
-            robot2.mobile_robot.reset_robot()
+            #robot2.mobile_robot.reset_robot()
             robot1.mobile_robot.close()
-            robot2.mobile_robot.close()
+            #robot2.mobile_robot.close()
             
         print("Error: " + str(sys.exc_info()[0]))
         pass

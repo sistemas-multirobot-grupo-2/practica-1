@@ -168,49 +168,76 @@ class Robot:
             #1
             elif(self.current_state == STOP and (self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED or self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = STOP
+                print(1)
             #2
             elif(self.current_state == MOVING_FORWARD_MAX and (self.st_information.light_detection == sensors.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = MOVING_FORWARD_MAX
+                print(2)
             #3
             elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and (self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = MOVING_FORWARD_PROPORTIONAL
+                print(3)
             #4
             elif(self.current_state == MOVING_FORWARD_MAX and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
                 self.next_state = MOVING_FORWARD_PROPORTIONAL
+                print(4)
             #5
             elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
                 self.next_state = MOVING_FORWARD_MAX
+                print(5)
             #6
-            elif(self.currect_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and self.st_actions.object_picked == False):
-                self.next_state = MOVING_FORWARD_MAX    
+            elif(self.current_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and self.st_actions.object_picked == False and self.st_actions.grasping == False):
+                self.next_state = MOVING_FORWARD_MAX
+                print(6)    
             #7
             elif(self.current_state == MOVING_FORWARD_MAX and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
+                self.st_actions.grasping = True
+                print(7)
             #8
-            elif(self.currect_state == STOP and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and self.st_actions.object_picked == False):
-                self.next_state = MOVING_FORWARD_PROPORTIONAL    
+            elif(self.current_state == STOP and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and self.st_actions.object_picked == False and self.st_actions.grasping == False):
+                self.next_state = MOVING_FORWARD_PROPORTIONAL
+                print(8)    
             #9
             elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
+                self.st_actions.grasping = True
+                print(9)
             #10
-            elif(self.currect_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+            elif(self.current_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and self.st_actions.grasping == True):
                 self.next_state = PICK_PLACE_OBJECT
-                self.st_actions.object_picked = ~self.st_actions.object_picked     
+                self.st_actions.object_picked = not(self.st_actions.object_picked)
+                print(self.st_actions.object_picked)
+                print(10)
+                     
             #11
-            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == False):
-                self.next_state = PICK_PLACE_OBJECT
+            #elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == False):
+            #    self.next_state = PICK_PLACE_OBJECT
+                
             #12
-            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.object_picked == True):
                 self.next_state = MOVING_BACKWARD_MAX
+                self.st_actions.grasping = False
+                print(12)
+            #elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+            #    self.next_state = MOVING_BACKWARD_MAX
+            #    self.st_actions.grasping = False
             #13
-            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
-                self.next_state = MOVING_BACKWARD_PROPORTIONAL 
+            #elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
+            #    self.next_state = MOVING_BACKWARD_PROPORTIONAL
+            #    self.st_actions.grasping = False 
             #14
-            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.object_picked == False):
                 self.next_state = MOVING_FORWARD_MAX
+                self.st_actions.grasping = False
+                print(14)
+            #elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+            #    self.next_state = MOVING_FORWARD_MAX
+            #    self.st_actions.grasping = False
             #15
-            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
-                self.next_state = MOVING_FORWARD_PROPORTIONAL
+            #elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
+            #    self.next_state = MOVING_FORWARD_PROPORTIONAL
+            #    self.st_actions.grasping = False
             #16
             elif(self.current_state == MOVING_BACKWARD_MAX and (self.st_information.light_detection == sensors.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = MOVING_BACKWARD_MAX
@@ -226,10 +253,12 @@ class Robot:
             #20    
             elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
+                self.st_actions.grasping = True
             #21
             elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
-            #22       
+                self.st_actions.grasping = True
+                   
             else:
                 self.next_state = UNDEFINED
                 
@@ -310,12 +339,12 @@ class Robot:
         if(self.mode == 'simulation'):
             print(self.name + ": Mandamos la acción de control a los actuadores")
         
-        self.error = EXECUTION_SUCCESSFUL
+        """self.error = EXECUTION_SUCCESSFUL
         
         if(self.current_state == EMERGENCY):
             self.error = EXECUTION_ERROR
         elif(self.current_state == UNDEFINED):
-            self.error = EXECUTION_ERROR
+            self.error = EXECUTION_ERROR"""
 
     # TODO: Añadir la info util y cuando esté todo hecho
     def refreshUserInterface (self):
@@ -328,6 +357,10 @@ class Robot:
         """
         if(self.mode == 'simulation'):
             print(self.name + ": Mostramos la informacion util y los errores")
+        
+        else:
+            print(self.name + ": Estado: " + str(self.current_state))
+        
 
     def run_main(self):
         """

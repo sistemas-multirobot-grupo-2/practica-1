@@ -22,7 +22,7 @@ class Actions:
         self.tool_closed = True #CAMBIADO Paco
         
         self.object_picked = False
-        self.finished_grasping = False     
+        self.grasping = False      
         
 ##-----------------INTERPOLACIÓN-------------------##
 
@@ -104,8 +104,6 @@ def controllerPickPlace(robot,port):
         print(robot.name + ": Calculamos la acción de control - Pick and Place")        
     
     elif(robot.mode == 'real_robot'):
-        robot.st_actions.finished_grasping = False
-        
         # Abrir Pinza
         robot.gripper("open", port, 1)
         robot.tool_closed = False #CAMBIADO
@@ -114,14 +112,13 @@ def controllerPickPlace(robot,port):
         #Cerrar Pinza
         robot.gripper("close", port, 1)
         robot.tool_closed = True #CAMBIADO
-        robot.object_picked = True
         time.sleep(2)
-       
-        robot.st_actions.finished_grasping = True 
         
     else:
-        robot.st_actions.finished_grasping = False
         #Cerrar Pinza
+        robot.gripper("close", port, 1)
+        robot.tool_closed = True #CAMBIADO
+        time.sleep(2)
         
         
 
