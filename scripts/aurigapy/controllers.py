@@ -97,10 +97,12 @@ def controllerPickPlace(robot):
         robot.st_actions.finished_grasping = False
         
         # Abrir Pinza
-        time.sleep(4)
+        robot.gripper("open", port, 1)
+        #time.sleep(4)
         
         #Cerrar Pinza
-        time.sleep(2)
+        robot.gripper("close", port, 1)
+        #time.sleep(2)
         
         robot.st_actions.finished_grasping = True 
         
