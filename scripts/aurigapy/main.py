@@ -13,8 +13,8 @@ def main():
     
     try:
         robot1 = Robot(name="Robot1",mode=args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="leader",
-                        robot_sensors_list=["light","light","line"],
-                        robot_sensor_ports_list=[9,10,11])
+                        robot_sensors_list=["light","line"],
+                        robot_sensor_ports_list=[9,11])
         
         robot2 = Robot(name="Robot2",mode=args.mode,bluetooth_path="/dev/rfcomm1",robot_rol="follower",
                         robot_sensors_list=["ultrasonic","light","light","line"],

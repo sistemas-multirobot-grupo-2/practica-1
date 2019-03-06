@@ -15,10 +15,9 @@ MOVING_FORWARD_MAX                =  1
 MOVING_FORWARD_PROPORTIONAL       =  2
 MOVING_BACKWARD_MAX               =  3
 MOVING_BACKWARD_PROPORTIONAL      =  4
-PICK_OBJECT                       =  5
-EMERGENCY                         = -1
-UNDEFINED                         = -2
-
+PICK_PLACE_OBJECT                       =  5
+UNDEFINED                         = -1
+EMERGENCY                         = -2
 
 # Codigos de Error
 EXECUTION_ERROR         = -1
@@ -53,17 +52,17 @@ class Robot:
             self.mobile_robot = AurigaPy(debug=False)
             self.mobile_robot.connect(bluetooth_path)
             self.error = EXECUTION_SUCCESSFUL
-            self.state = STOP
+            self.next_state = STOP 
         
         elif(self.mode == 'simulation'):
             print(self.name + ": Modo de Simulacion")
             self.error = EXECUTION_SUCCESSFUL
-            self.state = STOP
+            self.next_state = STOP
         
         else:
             print(self.name + ": Modo no reconocido")
             self.error = EXECUTION_ERROR
-            self.state = EMERGENCY
+            self.next_state = EMERGENCY
         
         # Añadimos información de los structs de datos
         self.st_config = Config()
@@ -78,7 +77,7 @@ class Robot:
             self.rol = FOLLOWER
         else:
             self.rol = UNDEFINED
-            self.state = EMERGENCY
+            self.next_state = EMERGENCY
             
         self.list_of_sensors = robot_sensors_list
         self.sensor_ports = robot_sensor_ports_list
@@ -87,6 +86,8 @@ class Robot:
         # Permiten hacer la clase más genérica
         self.READ_SENSORS = {0:""}
         self.PROCESS_SENSORS = {0:""}
+        
+        self.current_state = self.next_state
         
 
     # TODO: Añadir elementos cuando esten todos los sensores
@@ -149,15 +150,121 @@ class Robot:
         
         :return: void
         """
-        print(self.name + ": Actualizamos la maquina de estado del lider")
+        if(self.mode == 'simulation'):
+            print(self.name + ": Actualizamos la maquina de estado del lider")
+         
+        else:
+            if(self.current_state == EMERGENCY or self.current_state == UNDEFINED): # No puede salir de EMERGENCIA, hay que reiniciar el robot
+                self.next_state = EMERGENCY
+            
+            elif(self.current_state == STOP and (self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED or self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
+                self.next_state = STOP
+            
+            elif(self.current_state == MOVING_FORWARD_MAX and (self.st_information.light_detection == sensors.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
+                self.next_state = MOVING_FORWARD_MAX
+            
+            elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and (self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
+                self.next_state = MOVING_FORWARD_PROPORTIONAL
+            
+            elif(self.current_state == MOVING_FORWARD_MAX and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
+                self.next_state = MOVING_FORWARD_PROPORTIONAL
+            
+            elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+                self.next_state = MOVING_FORWARD_MAX
+            
+            elif(self.currect_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and self.st_actions.object_picked == False):
+                self.next_state = MOVING_FORWARD_MAX    
+            
+            elif(self.current_state == MOVING_FORWARD_MAX and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
+                self.next_state = STOP
+            
+            elif(self.currect_state == STOP and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and self.st_actions.object_picked == False):
+                self.next_state = MOVING_FORWARD_PROPORTIONAL    
+            
+            elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
+                self.next_state = STOP
+            
+            elif(self.currect_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+                self.next_state = PICK_PLACE_OBJECT
+                self.st_actions.object_picked = ~self.st_actions.object_picked     
+            
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == False):
+                self.next_state = PICK_PLACE_OBJECT
+            
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+                self.next_state = MOVING_BACKWARD_MAX
+            
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
+                self.next_state = MOVING_BACKWARD_PROPORTIONAL 
+            
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+                self.next_state = MOVING_FORWARD_MAX
+            
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
+                self.next_state = MOVING_FORWARD_PROPORTIONAL
+            
+            elif(self.current_state == MOVING_BACKWARD_MAX and (self.st_information.light_detection == sensors.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
+                self.next_state = MOVING_BACKWARD_MAX
+            
+            elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and (self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
+                self.next_state = MOVING_BACKWARD_PROPORTIONAL
+            
+            elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
+                self.next_state = MOVING_BACKWARD_PROPORTIONAL
+            
+            elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
+                self.next_state = MOVING_BACKWARD_MAX
+                
+            elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
+                self.next_state = STOP
+            
+            elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
+                self.next_state = STOP
+                    
+            else:
+                self.next_state = UNDEFINED
+                
+            self.current_state = self.next_state
+            
+            
+            
+                
+            #----------------------ANTIGUA---------------------#
+            """elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
+                self.next_state = STOP
+            
+            elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
+                self.next_state = STOP
+                
+            elif(self.current_state == STOP and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
+                self.next_state = PICK_PLACE_OBJECT
+            
+            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finish_picking == False):
+                self.next_state = PICK_PLACE_OBJECT
+            
+            elif(self.self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and controllers.st_actions.command == FORWARD):
+                self.next_state = MOVING_FORWARD_PROPORTIONAL
+            
+            elif(self.self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and controllers.st_actions.command == BACKWARD):
+                self.next_state = MOVING_BACKWARD_PROPORTIONAL
+            
+            elif(self.self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and controllers.st_actions.command == FORWARD):
+                self.next_state = MOVING_FORWARD_MAX
+            
+            elif(self.self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and controllers.st_actions.command == BACKWARD):
+                self.next_state = MOVING_BACKWARD_MAX
+            
+            else:
+                self.next_state = UNDEFINED"""
         
-        if(self.st_meas): #STOP
-            self.state = STOP
+        
+        """elif(self.st_meas): #STOP
+            self.next_state = STOP
             # Detectar objetivo a mover/obstáculo
             # Follower nos pierde
             # Emergencia
             # if(self.READ_SENSOR[ultrasonidos y luz] == objeto_a_distancia_casi_nula or Follower_signal = 0 or parada_emergencia): #STOP
-
+        
         elif(self.st_meas):#MOVING_FORWARD_MAX
             self.state = MOVING_FORWARD_MAX
             # Movemos motores al máx (Se supone que no saliéndose de la línea y lo hace moving)
@@ -179,8 +286,8 @@ class Robot:
             self.state = MOVING_BACKWARD_PROPORTIONAL    
             # Nos movemos adecuando la velocidad para llegar frenando atrás
             # Activamos si nos salimos de una curva/necesitamos ir hacia atrás o acercarnos al esclavo
-        elif(self.st_meas):#PICK_OBJECT
-            self.state = PICK_OBJECT
+        elif(self.st_meas):#PICK_PLACE_OBJECT
+            self.state = PICK_PLACE_OBJECT
             # Detectamos objeto a dist segura y no nos movemos
             # Avanzamos hasta el objeto y cerramos pinza
             # if(self.READ_SENSOR[ultrasonidos/luz] == objeto_a_distancia_nula and orden_de_coger):
@@ -191,9 +298,8 @@ class Robot:
             # perdemos señal de esclavo
             # no encontramos línea
             # if(self.READ_SENSOR[lineas] == ninguna_linea or slave_offline):
+        """
 
-        else: #ERROR
-            self.state = UNDEFINED
     
     # TODO: Cambiar la maquina de estados cuando esten todos los sensores
     def followerFiniteStateMachine(self):
@@ -206,7 +312,7 @@ class Robot:
         """
         print(self.name + ": Actualizamos la maquina de estados del seguidor")
         
-        if(self.st_meas): #STOP
+        """if(self.st_meas): #STOP
             self.state = STOP
             # Detectar objetivo a mover/obstáculo del lider detectado
             # Emergencia
@@ -231,8 +337,8 @@ class Robot:
             self.state = MOVING_BACKWARD_PROPORTIONAL    
             # Nos movemos adecuando la velocidad para llegar frenando
             # Activamos si nos salimos de una curva/necesitamos ir hacia atrás o el lider hace eso
-        elif(self.st_meas):#PICK_OBJECT NO EXISTE
-            self.state = PICK_OBJECT
+        elif(self.st_meas):#PICK_PLACE_OBJECT NO EXISTE
+            self.state = PICK_PLACE_OBJECT
         elif(self.st_meas):#EMERGENCY
             self.state = EMERGENCY
             # Objeto que no es objetivo
@@ -241,7 +347,7 @@ class Robot:
             # no detectamos al lider
             
         else: #ERROR
-            self.state = UNDEFINED
+            self.state = UNDEFINED"""
     
     def updateFiniteStateMachine(self):
         """
@@ -258,7 +364,7 @@ class Robot:
             self.followerFiniteStateMachine()
             
         else:
-            self.state = EMERGENCY               
+            self.current_state = EMERGENCY               
             
     # TODO: Cambiar el selector del controlador cuando estén los controladores y estados
     def controller(self):
@@ -270,28 +376,28 @@ class Robot:
         
         :return void
         """
-        if(self.state == STOP):
+        if(self.current_state == STOP):
             controllers.controllerStop(self)
             
-        elif(self.state == MOVING_FORWARD_MAX):
+        elif(self.current_state == MOVING_FORWARD_MAX):
             controllers.controllerStop(self)
 
-        elif(self.state == MOVING_FORWARD_PROPORTIONAL):
+        elif(self.stcurrent_stateate == MOVING_FORWARD_PROPORTIONAL):
             controllers.controllerStop(self)
             
-        elif(self.state == MOVING_BACKWARD_MAX):
+        elif(self.current_state == MOVING_BACKWARD_MAX):
             controllers.controllerStop(self)
             
-        elif(self.state == MOVING_BACKWARD_PROPORTIONAL):
+        elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL):
             controllers.controllerStop(self)
         
-        elif(self.state == PICK_OBJECT):
+        elif(self.current_state == PICK_PLACE_OBJECT):
             controllers.controllerStop(self)
         
-        elif(self.state == EMERGENCY):
+        elif(self.current_state == EMERGENCY):
             controllers.controllerStop(self)
             
-        elif(self.state == UNDEFINED):
+        elif(self.current_state == UNDEFINED):
             controllers.controllerStop(self)
         
         else:
@@ -313,9 +419,9 @@ class Robot:
         
         self.error = EXECUTION_SUCCESSFUL
         
-        if(self.state == EMERGENCY):
+        if(self.current_state == EMERGENCY):
             self.error = EXECUTION_ERROR
-        elif(self.state == UNDEFINED):
+        elif(self.current_state == UNDEFINED):
             self.error = EXECUTION_ERROR
 
     # TODO: Añadir la info util y cuando esté todo hecho
