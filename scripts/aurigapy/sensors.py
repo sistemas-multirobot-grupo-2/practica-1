@@ -14,39 +14,36 @@ import time
 ##-----Constantes y variables globales-----##
 
 #Distancia - ultrasonidos
-IMPOSSIBLE_DISTANCE = -1
+IMPOSSIBLE_DISTANCE     = -1
+MIN_ULTRA_VALUE         =  0 #Minimum detectable value for the distance sensor
+MAX_ULTRA_VALUE         =  400 #Maximum detectable value for the distance sensor
 
-MIN_ULTRA_VALUE = 0 #Minimum detectable value for the distance sensor
-MAX_ULTRA_VALUE = 400 #Maximum detectable value for the distance sensor
+NEAR_OBJECT_THRESHOLD   =  10 #An object closer than this will be considered a "near object"
+FAR_OBJECT_THRESHOLD    =  250 #An object closer than this will be considered a "far object"
 
-NEAR_OBJECT_THRESHOLD = 10 #An object closer than this will be considered a "near object"
-FAR_OBJECT_THRESHOLD = 250 #An object closer than this will be considered a "far object"
-
-NO_OBJECT_DETECTED = 0
-NEAR_OBJECT_DETECTED = 1
-FAR_OBJECT_DETECTED = 2
+NO_OBJECT_DETECTED      =  0
+NEAR_OBJECT_DETECTED    =  1
+FAR_OBJECT_DETECTED     =  2
 
 #Luz
-IMPOSSIBLE_LIGHT_VALUE = -1
-MIN_LIGHT_VALUE = 1 #Minimum detectable value for the light sensor
-MIN_LIGHT_VALUE = 1023 #Maximum detectable value for the light sensor
+IMPOSSIBLE_LIGHT_VALUE  = -1
+MIN_LIGHT_VALUE         =  1 #Minimum detectable value for the light sensor
+MIN_LIGHT_VALUE         =  1023 #Maximum detectable value for the light sensor
 
-LIGHT_THRESHOLD_MAX = 700 #Threshold over what is considered a light indicator is present
-LIGHT_THRESHOLD_MIN = 300
+LIGHT_THRESHOLD_MAX     =  700 #Threshold over what is considered a light indicator is present
+LIGHT_THRESHOLD_MIN     =  300
 
-UNKNOWN_LIGHT_DETECTED = 0
-HIGH_LIGHT_DETECTED = 1
-LOW_LIGHT_DETECTED = 2
-NO_LIGHT_DETECTED = 3
+NO_LIGHT_DETECTED       =  0
+LOW_LIGHT_DETECTED      =  1
+HIGH_LIGHT_DETECTED     =  2
+UNKNOWN_LIGHT_DETECTED  = -1
 
 #Linea
-UNKNOWN_LINE_VALUE = -1
-
-ANY_LINE_DETECTED = 3
-LEFT_LINE_DETECTED = 1
-RIGHT_LINE_DETECTED = 2
-BOTH_LINES_DETECTED = 0
-
+BOTH_LINES_DETECTED     =  0
+LEFT_LINE_DETECTED      =  1
+RIGHT_LINE_DETECTED     =  2
+ANY_LINE_DETECTED       =  3
+UNKNOWN_LINE_VALUE      = -1
 
 # Este struct contendrá la información raw de los sensores
 class Data:
@@ -107,9 +104,6 @@ def readLightSensor(robot,port):
     :return: True si no ha habido ningun problema. False en cualquier otro caso (ERROR)
     """
     error = False #Variable que contiene el valor de retorno
-    read_sensor1 = 0
-    read_sensor2 = 0
-    sensor_value_max = 0
     
     #Actuar segun el modo en el que este el robot
     if(robot.mode == 'simulation'): #Simulacion

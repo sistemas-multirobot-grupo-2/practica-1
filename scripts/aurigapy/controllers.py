@@ -19,6 +19,7 @@ class Actions:
         self.movement_motors_pwm = 0
         self.command = "forward"
         self.tool_motor_pwm = 0
+        
         self.object_picked = False
         self.finished_grasping = False
 
@@ -40,4 +41,24 @@ def controllerMovingForwardMax(robot):
 
     robot.st_actions.movement_motors_pwm = robot.st_config.max_speed_pwm_value
     robot.st_actions.command = "forward"        
+
+def controllerMovingForwardProportional(robot):
+    if(robot.mode == 'simulation'):
+        print(robot.name + ": Calculamos la acción de control - Forward Proportional")
+
+def controllerMovingBackwardMax(robot):
+    if(robot.mode == 'simulation'):
+        print(robot.name + ": Calculamos la acción de control - Backward Max")
+
+def controllerMovingBackwardProportional(robot):
+    if(robot.mode == 'simulation'):
+        print(robot.name + ": Calculamos la acción de control - Backward Proportional")
+        
+        
+def controllerPickPlace(robot):
+    if(robot.mode == 'simulation'):
+        print(robot.name + ": Calculamos la acción de control - Pick and Place")        
+        
+
+
         

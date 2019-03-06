@@ -15,7 +15,7 @@ MOVING_FORWARD_MAX                =  1
 MOVING_FORWARD_PROPORTIONAL       =  2
 MOVING_BACKWARD_MAX               =  3
 MOVING_BACKWARD_PROPORTIONAL      =  4
-PICK_PLACE_OBJECT                       =  5
+PICK_PLACE_OBJECT                 =  5
 UNDEFINED                         = -1
 EMERGENCY                         = -2
 
@@ -89,8 +89,7 @@ class Robot:
         
         self.current_state = self.next_state
         
-
-    # TODO: Añadir elementos cuando esten todos los sensores
+        
     def addSensors(self):
         """
         Funcion para añadir los sensores del robot
@@ -141,7 +140,6 @@ class Robot:
         for sensor in self.PROCESS_SENSORS:
             self.PROCESS_SENSORS[sensor](self,self.sensor_ports[sensor])
     
-    # TODO: Cambiar la maquina de estados cuando esten todos los sensores
     def leaderFiniteStateMachine(self):
         """
         Funcion para determinar el siguiente estado del Lider 
@@ -225,80 +223,6 @@ class Robot:
                 self.next_state = UNDEFINED
                 
             self.current_state = self.next_state
-            
-            
-            
-                
-            #----------------------ANTIGUA---------------------#
-            """elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
-                self.next_state = STOP
-            
-            elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
-                self.next_state = STOP
-                
-            elif(self.current_state == STOP and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
-                self.next_state = PICK_PLACE_OBJECT
-            
-            elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finish_picking == False):
-                self.next_state = PICK_PLACE_OBJECT
-            
-            elif(self.self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and controllers.st_actions.command == FORWARD):
-                self.next_state = MOVING_FORWARD_PROPORTIONAL
-            
-            elif(self.self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and controllers.st_actions.command == BACKWARD):
-                self.next_state = MOVING_BACKWARD_PROPORTIONAL
-            
-            elif(self.self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and controllers.st_actions.command == FORWARD):
-                self.next_state = MOVING_FORWARD_MAX
-            
-            elif(self.self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and controllers.st_actions.command == BACKWARD):
-                self.next_state = MOVING_BACKWARD_MAX
-            
-            else:
-                self.next_state = UNDEFINED"""
-        
-        
-        """elif(self.st_meas): #STOP
-            self.next_state = STOP
-            # Detectar objetivo a mover/obstáculo
-            # Follower nos pierde
-            # Emergencia
-            # if(self.READ_SENSOR[ultrasonidos y luz] == objeto_a_distancia_casi_nula or Follower_signal = 0 or parada_emergencia): #STOP
-        
-        elif(self.st_meas):#MOVING_FORWARD_MAX
-            self.state = MOVING_FORWARD_MAX
-            # Movemos motores al máx (Se supone que no saliéndose de la línea y lo hace moving)
-            # Comprobamos que estamos rectos
-                
-        elif(self.st_meas):#MOVING_FORWARD_PROPORTIONAL
-            self.state = MOVING_FORWARD_PROPORTIONAL
-            # Nos movemos adecuando la velocidad para llegar frenando
-            # Activamos si nos salimos de una curva (creo que auto)
-            # if(self.READ_SENSOR[ultrasonidos/luz] == objeto_a_distancia):
-        elif(self.st_meas):#MOVING_BACKWARD_MAX    
-            self.state = MOVING_BACKWARD_MAX    
-            # Movemos motores al máx (Se supone que no saliéndose de la línea)
-            # Comprobamos que estamos rectos
-            # Activamos si hay obstáculo inesperado?
-            # if(self.READ_SENSOR[pinza/ultrasonidos] == objeto_cogido and luz_de_cogida):
-
-        elif(self.st_meas):#MOVING_BACKWARD_PROPORTIONAL
-            self.state = MOVING_BACKWARD_PROPORTIONAL    
-            # Nos movemos adecuando la velocidad para llegar frenando atrás
-            # Activamos si nos salimos de una curva/necesitamos ir hacia atrás o acercarnos al esclavo
-        elif(self.st_meas):#PICK_PLACE_OBJECT
-            self.state = PICK_PLACE_OBJECT
-            # Detectamos objeto a dist segura y no nos movemos
-            # Avanzamos hasta el objeto y cerramos pinza
-            # if(self.READ_SENSOR[ultrasonidos/luz] == objeto_a_distancia_nula and orden_de_coger):
-
-        elif(self.st_meas):#EMERGENCY
-            self.state = EMERGENCY
-            # Objeto que no es objetivo
-            # perdemos señal de esclavo
-            # no encontramos línea
-            # if(self.READ_SENSOR[lineas] == ninguna_linea or slave_offline):
-        """
 
     
     # TODO: Cambiar la maquina de estados cuando esten todos los sensores
@@ -312,42 +236,6 @@ class Robot:
         """
         print(self.name + ": Actualizamos la maquina de estados del seguidor")
         
-        """if(self.st_meas): #STOP
-            self.state = STOP
-            # Detectar objetivo a mover/obstáculo del lider detectado
-            # Emergencia
-        elif(self.st_meas):#MOVING_FORWARD_MAX
-            self.state = MOVING_FORWARD_MAX
-            # Movemos motores al máx (Se supone que no saliéndose de la línea)
-            # Comprobamos que estamos rectos
-            # Estamos siguiendo al lider
-        elif(self.st_meas):#MOVING_FORWARD_PROPORTIONAL
-            self.state = MOVING_FORWARD_PROPORTIONAL
-            # Nos movemos adecuando la velocidad para llegar frenando
-            # Activamos si nos salimos de una curva
-            # Estamos siguiendo al lider
-            # Muy cerca del lider
-        elif(self.st_meas):#MOVING_BACKWARD_MAX    
-            self.state = MOVING_BACKWARD_MAX    
-            # Movemos motores al máx (Se supone que no saliéndose de la línea)
-            # Comprobamos que estamos rectos
-            # Activamos si hay obstáculo inesperado
-            # Estamos siguiendo al lider y se acerca a nosotros
-        elif(self.st_meas):#MOVING_BACKWARD_PROPORTIONAL
-            self.state = MOVING_BACKWARD_PROPORTIONAL    
-            # Nos movemos adecuando la velocidad para llegar frenando
-            # Activamos si nos salimos de una curva/necesitamos ir hacia atrás o el lider hace eso
-        elif(self.st_meas):#PICK_PLACE_OBJECT NO EXISTE
-            self.state = PICK_PLACE_OBJECT
-        elif(self.st_meas):#EMERGENCY
-            self.state = EMERGENCY
-            # Objeto que no es objetivo
-            # perdemos señal del lider
-            # no encontramos línea
-            # no detectamos al lider
-            
-        else: #ERROR
-            self.state = UNDEFINED"""
     
     def updateFiniteStateMachine(self):
         """
@@ -376,29 +264,23 @@ class Robot:
         
         :return void
         """
-        if(self.current_state == STOP):
+        if(self.current_state == EMERGENCY or self.current_state == UNDEFINED or STOP):
             controllers.controllerStop(self)
             
         elif(self.current_state == MOVING_FORWARD_MAX):
-            controllers.controllerStop(self)
+            controllers.controllerMovingForwardMax(self)
 
-        elif(self.stcurrent_stateate == MOVING_FORWARD_PROPORTIONAL):
-            controllers.controllerStop(self)
+        elif(self.current_state == MOVING_FORWARD_PROPORTIONAL):
+            controllers.controllerMovingForwardProportional(self)
             
         elif(self.current_state == MOVING_BACKWARD_MAX):
-            controllers.controllerStop(self)
+            controllers.controllerMovingBackwardMax(self)
             
         elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL):
-            controllers.controllerStop(self)
+            controllers.controllerMovingBackwardProportional(self)
         
         elif(self.current_state == PICK_PLACE_OBJECT):
-            controllers.controllerStop(self)
-        
-        elif(self.current_state == EMERGENCY):
-            controllers.controllerStop(self)
-            
-        elif(self.current_state == UNDEFINED):
-            controllers.controllerStop(self)
+            controllers.controllerPickPlace(self) 
         
         else:
             controllers.controllerStop(self)       
