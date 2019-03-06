@@ -165,71 +165,71 @@ class Robot:
         else:
             if(self.current_state == EMERGENCY or self.current_state == UNDEFINED): # No puede salir de EMERGENCIA, hay que reiniciar el robot
                 self.next_state = EMERGENCY
-            
+            #1
             elif(self.current_state == STOP and (self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED or self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = STOP
-            
+            #2
             elif(self.current_state == MOVING_FORWARD_MAX and (self.st_information.light_detection == sensors.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = MOVING_FORWARD_MAX
-            
+            #3
             elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and (self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = MOVING_FORWARD_PROPORTIONAL
-            
+            #4
             elif(self.current_state == MOVING_FORWARD_MAX and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
                 self.next_state = MOVING_FORWARD_PROPORTIONAL
-            
+            #5
             elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
                 self.next_state = MOVING_FORWARD_MAX
-            
+            #6
             elif(self.currect_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED and self.st_actions.object_picked == False):
                 self.next_state = MOVING_FORWARD_MAX    
-            
+            #7
             elif(self.current_state == MOVING_FORWARD_MAX and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
-            
+            #8
             elif(self.currect_state == STOP and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED and self.st_actions.object_picked == False):
                 self.next_state = MOVING_FORWARD_PROPORTIONAL    
-            
+            #9
             elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
-            
+            #10
             elif(self.currect_state == STOP and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
                 self.next_state = PICK_PLACE_OBJECT
                 self.st_actions.object_picked = ~self.st_actions.object_picked     
-            
+            #11
             elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == False):
                 self.next_state = PICK_PLACE_OBJECT
-            
+            #12
             elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
                 self.next_state = MOVING_BACKWARD_MAX
-            
+            #13
             elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == True and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
                 self.next_state = MOVING_BACKWARD_PROPORTIONAL 
-            
+            #14
             elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
                 self.next_state = MOVING_FORWARD_MAX
-            
+            #15
             elif(self.current_state == PICK_PLACE_OBJECT and self.st_actions.finished_grasping == True and self.st_actions.object_picked == False and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
                 self.next_state = MOVING_FORWARD_PROPORTIONAL
-            
+            #16
             elif(self.current_state == MOVING_BACKWARD_MAX and (self.st_information.light_detection == sensors.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = MOVING_BACKWARD_MAX
-            
+            #17
             elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and (self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
                 self.next_state = MOVING_BACKWARD_PROPORTIONAL
-            
+            #18
             elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.light_detection == sensors.LOW_LIGHT_DETECTED):
                 self.next_state = MOVING_BACKWARD_PROPORTIONAL
-            
+            #19
             elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.light_detection == sensors.NO_LIGHT_DETECTED):
                 self.next_state = MOVING_BACKWARD_MAX
-                
+            #20    
             elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
-            
+            #21
             elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.light_detection == sensors.HIGH_LIGHT_DETECTED):
                 self.next_state = STOP
-                    
+            #22       
             else:
                 self.next_state = UNDEFINED
                 
