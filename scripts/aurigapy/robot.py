@@ -34,9 +34,20 @@ UNDEFINED   = -1
 class Config:
     def __init__(self):
         print("Init Class Config")
-        self.max_movement_motors_pwm = 255
+        self.max_movement_motors_pwm = 100
+        self.min_movement_motors_pwm = 20
+        
         self.ultrasonic_sensor_reading_period_in_millis = 150
+        
+        self.light_threshold_max = 700
+        self.light_threshold_min = 300
+        
+        self.near_object_threshold  = 10
+        self.far_object_threshold   = 250
+        
         self.user_interface_refresh_period_in_millis = 500
+        
+        
         
 # Clase robot
 class Robot:
