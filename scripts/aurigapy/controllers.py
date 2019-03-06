@@ -89,7 +89,7 @@ def controllerMovingBackwardProportional(robot):
         robot.st_actions.movement_motors_pwm = 0
         robot.st_actions.command = BACKWARD 
         
-def controllerPickPlace(robot):
+def controllerPickPlace(robot,port):
     if(robot.mode == 'simulation'):
         print(robot.name + ": Calculamos la acción de control - Pick and Place")        
     
