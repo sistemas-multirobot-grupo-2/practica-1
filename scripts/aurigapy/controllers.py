@@ -19,19 +19,11 @@ class Actions:
         
         self.movement_motors_pwm = 0
         self.command = FORWARD
-        self.tool_closed = True #CAMBIADO Paco
+        self.tool_motor_pwm = 0
         
         self.object_picked = False
         self.grasping = False      
-        
-##-----------------INTERPOLACIÓN-------------------##
 
-def interpolation(robot):
-    aux = robot.st_config.min_movement_motors_pwm
-    aux2 = (robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) 
-    aux3 = (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) 
-    aux4 = (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min) 
-    robot.st_actions.movement_motors_pwm = aux + ((aux2*aux3)/aux4)                          
 
 ##------------------CONTROLADORES------------------##        
 
@@ -54,7 +46,7 @@ def controllerMovingForwardMax(robot):
         print(robot.name + ": Calculamos la acción de control - Forward Max")
     
     elif(robot.mode == 'real_robot'): 
-        robot.st_actions.movement_motors_pwm = robot.st_config.max_speed_pwm_value
+        robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
         robot.st_actions.command = FORWARD
     
     else:
@@ -66,8 +58,7 @@ def controllerMovingForwardProportional(robot):
         print(robot.name + ": Calculamos la acción de control - Forward Proportional")
 
     elif(robot.mode == 'real_robot'):
-        #robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
-        robot.interpolation()
+        robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
         robot.st_actions.command = FORWARD
     
     else:
@@ -79,7 +70,7 @@ def controllerMovingBackwardMax(robot):
         print(robot.name + ": Calculamos la acción de control - Backward Max")
     
     elif(robot.mode == 'real_robot'):
-        robot.st_actions.movement_motors_pwm = robot.st_config.max_speed_pwm_value
+        robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
         robot.st_actions.command = BACKWARD
     
     else:
@@ -91,35 +82,32 @@ def controllerMovingBackwardProportional(robot):
         print(robot.name + ": Calculamos la acción de control - Backward Proportional")
     
     elif(robot.mode == 'real_robot'):
-        #robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
-        robot.interpolation()
+        robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
         robot.st_actions.command = BACKWARD
     
     else:
         robot.st_actions.movement_motors_pwm = 0
         robot.st_actions.command = BACKWARD 
         
-def controllerPickPlace(robot,port):
+def controllerPickPlace(robot):
     if(robot.mode == 'simulation'):
         print(robot.name + ": Calculamos la acción de control - Pick and Place")        
     
     elif(robot.mode == 'real_robot'):
-        # Abrir Pinza
-        robot.gripper("open", port, 1)
+        robot.mobile_robot.gripper("open", 7, 1)
         robot.tool_closed = False #CAMBIADO
         time.sleep(4)
         
         #Cerrar Pinza
-        robot.gripper("close", port, 1)
+        robot.mobile_robot.gripper("close", 7, 1)
         robot.tool_closed = True #CAMBIADO
         time.sleep(2)
         
     else:
         #Cerrar Pinza
-        robot.gripper("close", port, 1)
+        robot.mobile_robot.gripper("close", 7, 1)
         robot.tool_closed = True #CAMBIADO
         time.sleep(2)
-        
         
 
         

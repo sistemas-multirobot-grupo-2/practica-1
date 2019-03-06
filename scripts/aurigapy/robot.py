@@ -339,12 +339,16 @@ class Robot:
         if(self.mode == 'simulation'):
             print(self.name + ": Mandamos la acción de control a los actuadores")
         
-        """self.error = EXECUTION_SUCCESSFUL
-        
-        if(self.current_state == EMERGENCY):
-            self.error = EXECUTION_ERROR
-        elif(self.current_state == UNDEFINED):
-            self.error = EXECUTION_ERROR"""
+        else:
+            self.error = EXECUTION_SUCCESSFUL
+            
+            if(self.current_state == EMERGENCY):
+                self.error = EXECUTION_ERROR
+            elif(self.current_state == UNDEFINED):
+                self.error = EXECUTION_ERROR
+            
+            else:
+                self.mobile_robot.set_command(self.st_actions.command,int(self.st_actions.movement_motors_pwm))
 
     # TODO: Añadir la info util y cuando esté todo hecho
     def refreshUserInterface (self):

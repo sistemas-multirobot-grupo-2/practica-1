@@ -21,6 +21,7 @@ def main():
                         robot_sensor_ports_list=[9,10,11,12])
         """
         
+        #robot1.run_main()
         t1 = threading.Thread(target=robot1.run_main)
         #t2 = threading.Thread(target=robot2.run_main)
         t1.start()
@@ -30,14 +31,15 @@ def main():
         
         
     except KeyboardInterrupt:
-        print('\nCancelled by user. Bye!')    
-    except:
+        print('\nCancelled by user. Bye!')  
+        
         if(args.mode == 'real_robot'):
             robot1.mobile_robot.reset_robot()
             #robot2.mobile_robot.reset_robot()
             robot1.mobile_robot.close()
             #robot2.mobile_robot.close()
-            
+             
+    except:
         print("Error: " + str(sys.exc_info()[0]))
         pass
 
