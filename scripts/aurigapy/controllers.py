@@ -19,11 +19,19 @@ class Actions:
         
         self.movement_motors_pwm = 0
         self.command = FORWARD
-        self.tool_motor_pwm = 0
+        self.tool_closed = True #CAMBIADO Paco
         
         self.object_picked = False
-        self.finished_grasping = False      
+        self.finished_grasping = False     
+        
+##-----------------INTERPOLACIÓN-------------------##
 
+def interpolation(robot):
+    aux = robot.st_config.min_movement_motors_pwm
+    aux2 = (robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) 
+    aux3 = (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) 
+    aux4 = (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min) 
+    robot.st_actions.movement_motors_pwm = aux + ((aux2*aux3)/aux4)                          
 
 ##------------------CONTROLADORES------------------##        
 
@@ -58,7 +66,8 @@ def controllerMovingForwardProportional(robot):
         print(robot.name + ": Calculamos la acción de control - Forward Proportional")
 
     elif(robot.mode == 'real_robot'):
-        robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+        #robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+        robot.interpolation()
         robot.st_actions.command = FORWARD
     
     else:
@@ -82,7 +91,8 @@ def controllerMovingBackwardProportional(robot):
         print(robot.name + ": Calculamos la acción de control - Backward Proportional")
     
     elif(robot.mode == 'real_robot'):
-        robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+        #robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_data.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+        robot.interpolation()
         robot.st_actions.command = BACKWARD
     
     else:
@@ -98,12 +108,15 @@ def controllerPickPlace(robot,port):
         
         # Abrir Pinza
         robot.gripper("open", port, 1)
-        #time.sleep(4)
+        robot.tool_closed = False #CAMBIADO
+        time.sleep(4)
         
         #Cerrar Pinza
         robot.gripper("close", port, 1)
-        #time.sleep(2)
-        
+        robot.tool_closed = True #CAMBIADO
+        robot.object_picked = True
+        time.sleep(2)
+       
         robot.st_actions.finished_grasping = True 
         
     else:
