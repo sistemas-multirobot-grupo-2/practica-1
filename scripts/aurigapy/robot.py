@@ -28,14 +28,6 @@ LEADER      =  0
 FOLLOWER    =  1
 UNDEFINED   = -1
 
-# Follower limits
-MAX_SEPARATION = 55
-MIN_SEPARATION = 15
-U_S_MARGIN     = 2
-# Followe Actions
-FOLLOW = 2
-REPELL = 1
-WAIT   = 0
 ##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot
 class Config:
@@ -271,17 +263,6 @@ class Robot:
                 self.next_state = UNDEFINED
 
             self.current_state = self.next_state
-
-    def deltaDistance(self):
-        """Funcion que devuelve el incremento de distancia en el ultrasonidos en funcion de si es positiva o negativa"""
-        self.followerLastKnownDistance = self.followerLastKnownDistance - self.st_information.ultrasensor_detection
-        if(self.followerLastKnownDistance > U_S_MARGIN )
-            return FOLLOW
-        elif(self.followerLastKnownDistance < U_S_MARGIN)
-            return REPELL
-        else
-            print("Waiting for leader to move")
-            return WAIT
 
     # TODO: Cambiar la maquina de estados cuando esten todos los sensores
     def followerFiniteStateMachine(self):
