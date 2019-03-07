@@ -315,45 +315,35 @@ class Robot:
                 self.followerLastKnownDistance = self.st_information.ultrasensor_detection
                 print(8)
             #9
-            elif(self.current_state == MOVING_FORWARD_PROPORTIONAL and self.st_information.ultrasensor_detection < MIN_SEPARATION):
-                self.next_state = STOP
-                self.followerLastKnownDistance = self.st_information.ultrasensor_detection
+            elif(self.current_state == STOP and (deltaDistance(self) == REPELL) and self.st_information.ultrasensor_detection < MIN_SEPARATION) :
+                self.next_state = MOVING_BACKWARD_MAX
                 print(9)
             #10
-            elif(self.current_state == STOP and (deltaDistance(self) == REPELL) and self.st_information.ultrasensor_detection < MIN_SEPARATION) :
+            elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.ultrasensor_detection < MIN_SEPARATION) :
                 self.next_state = MOVING_BACKWARD_MAX
                 print(10)
             #11
-            elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.ultrasensor_detection < MIN_SEPARATION) :
-                self.next_state = MOVING_BACKWARD_MAX
+            elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.ultrasensor_detection > MIN_SEPARATION and self.st_information.ultrasensor_detection < MAX_SEPARATION) :
+                self.next_state = MOVING_BACKWARD_PROPORTIONAL
                 print(11)
             #12
-            elif(self.current_state == MOVING_BACKWARD_MAX and self.st_information.ultrasensor_detection > MIN_SEPARATION and self.st_information.ultrasensor_detection < MAX_SEPARATION) :
+            elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection > MIN_SEPARATION and self.st_information.ultrasensor_detection < MAX_SEPARATION) :
                 self.next_state = MOVING_BACKWARD_PROPORTIONAL
                 print(12)
             #13
-            elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection > MIN_SEPARATION and self.st_information.ultrasensor_detection < MAX_SEPARATION) :
-                self.next_state = MOVING_BACKWARD_PROPORTIONAL
-                print(13)
-            #14
             elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection > MAX_SEPARATION):
                 self.next_state = STOP
                 self.followerLastKnownDistance = self.st_information.ultrasensor_detection
-                print(14)
-            #15
-            elif(self.current_state == STOP and (deltaDistance(self) == REPELL) and self.st_information.ultrasensor_detection > MIN_SEPARATION and self.st_information.ultrasensor_detection < MAX_SEPARATION) :
-                self.next_state = MOVING_BACKWARD_PROPORTIONAL
-                print(15)
-            #16
+                print(13)
+            #14
             elif(self.current_state == MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection < MIN_SEPARATION):
                 self.next_state = MOVING_BACKWARD_MAX
-                print(16)
-            #17
+                print(14)
+            #15
             elif(self.current_state == MOVING_BACKWARD_MAX and  self.st_information.ultrasensor_detection > MAX_SEPARATION):
                 self.next_state = STOP
                 self.followerLastKnownDistance = self.st_information.ultrasensor_detection
-
-                print(17)
+                print(15)
             else:
                 self.next_state = UNDEFINED
 
