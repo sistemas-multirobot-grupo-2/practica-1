@@ -40,6 +40,16 @@ RIGHT_LINE_DETECTED     =  2
 ANY_LINE_DETECTED       =  3
 UNKNOWN_LINE_VALUE      = -1
 
+# Follower limits
+MAX_SEPARATION = 55
+MIN_SEPARATION = 15
+U_S_MARGIN     = 2
+# Followe Actions
+FOLLOW = 2
+REPELL = 1
+WAIT   = 0
+
+
 # Este struct contendrá la información raw de los sensores
 class Data:
     def __init__(self):
@@ -159,7 +169,20 @@ def readLineSensor(robot,port):
                 
 
 ##------------------Procesado------------------##  
-      
+#PROCESADO A ALTO NIVEL PARA OBTENER COMPORTAMIENTO DEL LIDER
+def deltaDistance(self):
+        """Funcion que devuelve el incremento de distancia en el ultrasonidos en funcion de si es positiva o negativa"""
+        self.followerLastKnownDistance = self.followerLastKnownDistance - self.st_information.ultrasensor_detection
+        if(self.followerLastKnownDistance > U_S_MARGIN )
+            print("Following leader")
+            return FOLLOW
+        elif(self.followerLastKnownDistance < U_S_MARGIN)
+            print("Repelling leader")
+            return REPELL
+        else
+            print("Waiting for leader to move")
+            return WAIT
+
 # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
 # sensor de ultrasonidos.
 def processUltrasonicSensorData(robot,port):
