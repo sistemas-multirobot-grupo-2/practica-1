@@ -56,7 +56,15 @@ def controllerMovingForwardProportional(robot):
         print(robot.name + ": Calculamos la acción de control - Forward Proportional")
 
     elif(robot.mode == 'real_robot'):
-        robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+            if(robot.st_meas.light_sensor_value < robot.st_config.light_threshold_min):
+            robot.st_actions.movement_motors_pwm = 0
+            
+        elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_max):
+            robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
+            
+        else:
+            robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+        
         robot.st_actions.command = constants.FORWARD
     
     else:
@@ -80,7 +88,15 @@ def controllerMovingBackwardProportional(robot):
         print(robot.name + ": Calculamos la acción de control - Backward Proportional")
     
     elif(robot.mode == 'real_robot'):
-        robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+            if(robot.st_meas.light_sensor_value < robot.st_config.light_threshold_min):
+            robot.st_actions.movement_motors_pwm = 0
+            
+        elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_max):
+            robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
+            
+        else:
+            robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
+        
         robot.st_actions.command = constants.BACKWARD
     
     else:
