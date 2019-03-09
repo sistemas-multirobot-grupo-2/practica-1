@@ -39,11 +39,12 @@ WAIT   = 0
 IMPOSSIBLE_DISTANCE     = -1
 MIN_ULTRASONIC_VALUE    =  0 #Minimum detectable value for the distance sensor
 MAX_ULTRASONIC_VALUE    =  400 #Maximum detectable value for the distance sensor
+ULTRASONIC_ERROR        =  5
 
-UNKNOWN_OBJECT_DETECTED = -1
-NO_OBJECT_DETECTED      =  0
-NEAR_OBJECT_DETECTED    =  1
-FAR_OBJECT_DETECTED     =  2
+UNKNOWN_OBJECT_DETECTED     = -1
+COLLISION_OBJECT_DETECTED   =  0
+NEAR_OBJECT_DETECTED        =  1
+FAR_OBJECT_DETECTED         =  2
 
 #Luz
 IMPOSSIBLE_LIGHT_VALUE  = -1

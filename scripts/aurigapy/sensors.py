@@ -16,6 +16,7 @@ import time
 class Data:
     def __init__(self):
         print("Init Class Data")
+        self.previos_ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
         self.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE #Distancia en cm leida por el sensor de distancia. "-1" para UNKNOWN
         self.light_sensor_value = constants.IMPOSSIBLE_LIGHT_VALUE #Valor entre 0 y 1024 de intensidad de luz. "-1" para UNKNOWN
         self.line_detection = constants.UNKNOWN_LINE_VALUE #0-los 2 on; 1-izq on; 2-der on; 3-ninguno. "-1" para UNKNOWN
@@ -24,8 +25,9 @@ class Data:
 class Information:
     def __init__(self):
         print("Init Class Information")
-        self.ultrasensor_detection = constants.NO_OBJECT_DETECTED #Posicion de un posible objeto (NEAR, FAR, NO)
+        self.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED #Posicion de un posible objeto (NEAR, FAR, NO)
         self.light_detection = constants.UNKNOWN_LIGHT_DETECTED #Posicion de un posible objeto (HIGH, LOW, UNKNOWN)
+        self.follower_behaviour = constants.WAIT
         
         
 ##------------------Lectura------------------##        
@@ -132,8 +134,29 @@ def readLineSensor(robot,port):
 
 ##------------------Procesado------------------##  
 #PROCESADO A ALTO NIVEL PARA OBTENER COMPORTAMIENTO DEL LIDER
-def deltaDistance(self):
-        """Funcion que devuelve el incremento de distancia en el ultrasonidos en funcion de si es positiva o negativa"""
+def followerBehaviour(robot):
+        """
+        Funcion que devuelve el incremento de distancia en el ultrasonidos en funcion de si es positiva o negativa
+        
+        delta_distance = 0.0
+        if(robot.st_information.ultrasensor_detection == constants.UNKNOWN_OBJECT_DETECTED):
+            return
+        
+        else:
+            if(robot.st_meas.previos_ultrasensor_distance is not constants.IMPOSSIBLE_DISTANCE):
+                delta_distance = robot.st_meas.ultrasensor_distance - robot.st_meas.previos_ultrasensor_distance
+                
+                if(delta_distance < ULTRASONIC_ERROR and ULTRASONIC_ERROR > -1.0*ULTRASONIC_ERROR):
+                    robot.st_information.follower_behaviour = constants.WAIT  
+                
+                elif(delta_distance > )
+                
+             
+            
+            
+            robot.st_meas.previos_ultrasensor_distance == robot.st_meas.ultrasensor_distance
+                
+        
         self.followerLastKnownDistance = self.followerLastKnownDistance - self.st_information.ultrasensor_detection
         if(self.followerLastKnownDistance > constants.U_S_MARGIN):
             print("Following leader")
@@ -143,7 +166,7 @@ def deltaDistance(self):
             return constants.REPELL
         else:
             print("Waiting for leader to move")
-            return constants.WAIT
+            return constants.WAIT"""
 
 # Procesador específico para extaer información acerca de la presencia de obstáculos en base a los datos del 
 # sensor de ultrasonidos.
@@ -167,7 +190,7 @@ def processUltrasonicSensorData(robot,port):
            error = True
   
         elif(robot.st_meas.ultrasensor_distance < robot.st_config.near_object_threshold):
-            robot.st_information.ultrasensor_detection = constants.NO_OBJECT_DETECTED 
+            robot.st_information.ultrasensor_detection = constants.COLLISION_OBJECT_DETECTED 
         
         elif(robot.st_meas.ultrasensor_distance > robot.st_config.near_object_threshold and robot.st_meas.ultrasensor_distance < robot.st_config.far_object_threshold):
             robot.st_information.ultrasensor_detection = constants.NEAR_OBJECT_DETECTED 

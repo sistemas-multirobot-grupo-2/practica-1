@@ -12,22 +12,24 @@ def main():
     args = parser.parse_args()
     
     try:
+        
         robot1 = Robot(name="Robot1",mode=args.mode,bluetooth_path="/dev/rfcomm1",robot_rol="leader",
                         robot_sensors_list=["light","line"],
                         robot_sensor_ports_list=[1,9])
-        """
+        
         robot2 = Robot(name="Robot2",mode=args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="follower",
-                        robot_sensors_list=["ultrasonic","light","light","line"],
-                        robot_sensor_ports_list=[9,10,11,12])
-        """
+                        robot_sensors_list=["ultrasonic","light","line"],
+                        robot_sensor_ports_list=[9,1,12])
+        
         
         #robot1.run_main()
+        #robot2.run_main()
         t1 = threading.Thread(target=robot1.run_main)
-        #t2 = threading.Thread(target=robot2.run_main)
+        t2 = threading.Thread(target=robot2.run_main)
         t1.start()
-        #t2.start()
+        t2.start()
         t1.join()
-        #t2.join()
+        t2.join()
         
         
     except KeyboardInterrupt:

@@ -10,6 +10,8 @@ import time
 
 
 
+LEADER_STATE_INFORMATION = constants.STOP
+
 ##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot
 class Config:
@@ -34,7 +36,6 @@ class Config:
 class Robot:
     def __init__(self,name,mode,bluetooth_path,robot_rol,robot_sensors_list,robot_sensor_ports_list):
         print("Init Class Robot")
-
         self.name = name
         self.mode = mode
 
@@ -65,9 +66,8 @@ class Robot:
 
         if robot_rol == "leader":
             self.rol = constants.LEADER
-        elif robot_rol == "constants.FOLLOWer":
+        elif robot_rol == "follower":
             self.rol = constants.FOLLOWER
-            self.follower_last_known_distance = constants.MIN_SEPARATION; #By default we asume the leader will move FWD
         else:
             self.rol = constants.UNDEFINED
             self.next_state = constants.EMERGENCY
@@ -133,6 +133,9 @@ class Robot:
         for sensor in self.PROCESS_SENSORS:
             self.PROCESS_SENSORS[sensor](self,self.sensor_ports[sensor])
 
+        """if(self.rol == "follower"):
+            sensors.follower_behaviour(self)"""
+            
     def leaderFiniteStateMachine(self):
         """
         Funcion para determinar el siguiente estado del Lider
@@ -141,53 +144,55 @@ class Robot:
 
         :return: void
         """
+        global LEADER_BEHAVIOUR_INFORMATION
+        
         if(self.mode == 'simulation'):
             print(self.name + ": Actualizamos la maquina de estado del lider")
 
         else:
             if(self.current_state == constants.EMERGENCY or self.current_state == constants.UNDEFINED): # No puede salir de EMERGENCIA, hay que reiniciar el robot
-                self.next_state = constants.EMERGENCY
+                LEADER_STATE_INFORMATION = self.next_state = constants.EMERGENCY
             #1
             elif(self.current_state == constants.STOP and (self.st_information.light_detection == constants.HIGH_LIGHT_DETECTED or self.st_information.light_detection == constants.LOW_LIGHT_DETECTED or self.st_information.light_detection == constants.UNKNOWN_LIGHT_DETECTED)):
-                self.next_state = constants.STOP
+                LEADER_STATE_INFORMATION = self.next_state = constants.STOP
                 print(1)
             #2
             elif(self.current_state == constants.MOVING_FORWARD_MAX and (self.st_information.light_detection == constants.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
-                self.next_state = constants.MOVING_FORWARD_MAX
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_MAX
                 print(2)
             #3
             elif(self.current_state == constants.MOVING_FORWARD_PROPORTIONAL and (self.st_information.light_detection == constants.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
-                self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
                 print(3)
             #4
             elif(self.current_state == constants.MOVING_FORWARD_MAX and self.st_information.light_detection == constants.LOW_LIGHT_DETECTED):
-                self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
                 print(4)
             #5
             elif(self.current_state == constants.MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == constants.NO_LIGHT_DETECTED):
-                self.next_state = constants.MOVING_FORWARD_MAX
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_MAX
                 print(5)
             #6
             elif(self.current_state == constants.STOP and self.st_information.light_detection == constants.NO_LIGHT_DETECTED and self.st_actions.object_picked == False and self.st_actions.grasping == False):
-                self.next_state = constants.MOVING_FORWARD_MAX
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_MAX
                 print(6)
             #7
             elif(self.current_state == constants.MOVING_FORWARD_MAX and self.st_information.light_detection == constants.HIGH_LIGHT_DETECTED):
-                self.next_state = constants.STOP
+                LEADER_STATE_INFORMATION = self.next_state = constants.STOP
                 self.st_actions.grasping = True
                 print(7)
             #8
             elif(self.current_state == constants.STOP and self.st_information.light_detection == constants.LOW_LIGHT_DETECTED and self.st_actions.object_picked == False and self.st_actions.grasping == False):
-                self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
                 print(8)
             #9
             elif(self.current_state == constants.MOVING_FORWARD_PROPORTIONAL and self.st_information.light_detection == constants.HIGH_LIGHT_DETECTED):
-                self.next_state = constants.STOP
+                LEADER_STATE_INFORMATION = self.next_state = constants.STOP
                 self.st_actions.grasping = True
                 print(9)
             #10
             elif(self.current_state == constants.STOP and self.st_information.light_detection == constants.NO_LIGHT_DETECTED and self.st_actions.grasping == True):
-                self.next_state = constants.PICK_PLACE_OBJECT
+                LEADER_STATE_INFORMATION = self.next_state = constants.PICK_PLACE_OBJECT
                 self.st_actions.object_picked = not(self.st_actions.object_picked)
                 print(self.st_actions.object_picked)
                 print(10)
@@ -198,51 +203,45 @@ class Robot:
 
             #12
             elif(self.current_state == constants.PICK_PLACE_OBJECT and self.st_actions.object_picked == True):
-                self.next_state = constants.MOVING_BACKWARD_MAX
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_BACKWARD_MAX
                 self.st_actions.grasping = False
                 print(12)
-            #elif(self.current_state == constants.PICK_PLACE_OBJECT and self.st_actions.object_picked == True and self.st_information.light_detection == constants.NO_LIGHT_DETECTED):
-            #    self.next_state = constants.MOVING_BACKWARD_MAX
-            #    self.st_actions.grasping = False
             #13
             #elif(self.current_state == constants.PICK_PLACE_OBJECT and self.st_actions.object_picked == True and self.st_information.light_detection == constants.LOW_LIGHT_DETECTED):
             #    self.next_state = constants.MOVING_BACKWARD_PROPORTIONAL
             #    self.st_actions.grasping = False
             #14
             elif(self.current_state == constants.PICK_PLACE_OBJECT and self.st_actions.object_picked == False):
-                self.next_state = constants.MOVING_FORWARD_MAX
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_MAX
                 self.st_actions.grasping = False
                 print(14)
-            #elif(self.current_state == constants.PICK_PLACE_OBJECT and self.st_actions.object_picked == False and self.st_information.light_detection == constants.NO_LIGHT_DETECTED):
-            #    self.next_state = constants.MOVING_FORWARD_MAX
-            #    self.st_actions.grasping = False
             #15
             #elif(self.current_state == constants.PICK_PLACE_OBJECT and self.st_actions.object_picked == False and self.st_information.light_detection == constants.LOW_LIGHT_DETECTED):
             #    self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
             #    self.st_actions.grasping = False
             #16
             elif(self.current_state == constants.MOVING_BACKWARD_MAX and (self.st_information.light_detection == constants.NO_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
-                self.next_state = constants.MOVING_BACKWARD_MAX
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_BACKWARD_MAX
             #17
             elif(self.current_state == constants.MOVING_BACKWARD_PROPORTIONAL and (self.st_information.light_detection == constants.LOW_LIGHT_DETECTED or self.st_information.light_detection == sensors.UNKNOWN_LIGHT_DETECTED)):
-                self.next_state = constants.MOVING_BACKWARD_PROPORTIONAL
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_BACKWARD_PROPORTIONAL
             #18
             elif(self.current_state == constants.MOVING_BACKWARD_MAX and self.st_information.light_detection == constants.LOW_LIGHT_DETECTED):
-                self.next_state = constants.MOVING_BACKWARD_PROPORTIONAL
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_BACKWARD_PROPORTIONAL
             #19
             elif(self.current_state == constants.MOVING_BACKWARD_PROPORTIONAL and self.st_information.light_detection == constants.NO_LIGHT_DETECTED):
-                self.next_state = constants.MOVING_BACKWARD_MAX
+                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_BACKWARD_MAX
             #20
             elif(self.current_state == constants.MOVING_BACKWARD_MAX and self.st_information.light_detection == constants.HIGH_LIGHT_DETECTED):
-                self.next_state = constants.STOP
+                LEADER_STATE_INFORMATION = self.next_state = constants.STOP
                 self.st_actions.grasping = True
             #21
             elif(self.current_state == constants.MOVING_BACKWARD_PROPORTIONAL and self.st_information.light_detection == constants.HIGH_LIGHT_DETECTED):
-                self.next_state = constants.STOP
+                LEADER_STATE_INFORMATION = self.next_state = constants.STOP
                 self.st_actions.grasping = True
 
             else:
-                self.next_state = constants.UNDEFINED
+                LEADER_STATE_INFORMATION = self.next_state = constants.UNDEFINED
 
             self.current_state = self.next_state
 
@@ -255,19 +254,57 @@ class Robot:
 
         :return: void
         """
-        print(self.name + ": Actualizamos la maquina de estados del seguidor")
+        global LEADER_STATE_INFORMATION
+        
         if(self.mode == 'simulation'):
-            print(self.name + ": Actualizamos la maquina de estado del lider")
+            print(self.name + ": Actualizamos la maquina de estado del seguidor")
 
         else:
             if(self.current_state == constants.EMERGENCY or self.current_state == constants.UNDEFINED): # No puede salir de EMERGENCIA, hay que reiniciar el robot
                 self.next_state = constants.EMERGENCY
+            
+            elif(LEADER_STATE_INFORMATION == constants.EMERGENCY or LEADER_STATE_INFORMATION == constants.UNDEFINED or LEADER_STATE_INFORMATION == constants.STOP or LEADER_STATE_INFORMATION == constants.PICK_PLACE_OBJECT):
+                self.next_state = constants.STOP
+            
+            elif((LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.FAR_OBJECT_DETECTED):
+                self.next_state = constants.MOVING_FORWARD_MAX
+             
+            elif((LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.NEAR_OBJECT_DETECTED):
+                self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
+            
+            elif(LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == constants.COLLISION_OBJECT_DETECTED):
+                self.next_state = constants.MOVING_BACKWARD_MAX
+             
+            elif(LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == constants.NEAR_OBJECT_DETECTED):
+                self.next_state = constants.MOVING_BACKWARD_PROPORTIONAL
+            
+            elif(self.current_state == constants.MOVING_FORWARD_MAX and self.st_information.ultrasensor_detection == COLLISION_OBJECT_DETECTED):
+                self.next_state = constants.STOP
+            
+            elif(self.current_state == constants.MOVING_FORWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == COLLISION_OBJECT_DETECTED):
+                self.next_state = constants.STOP
+                
+            elif(self.current_state == constants.MOVING_BACKWARD_MAX and self.st_information.ultrasensor_detection == FAR_OBJECT_DETECTED):
+                self.next_state = constants.STOP
+            
+            elif(self.current_state == constants.MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == FAR_OBJECT_DETECTED):
+                self.next_state = constants.STOP 
+            
+            elif(self.st_information.ultrasensor_detection == UNKNOWN_OBJECT_DETECTED):
+                self.next_state = constants.STOP 
+            
+            else:
+                self.next_state = constants.UNDEFINED    
+            
+            self.current_state = self.next_state
+            
+            """    
             #1
-            elif(self.current_state == constants.STOP and (deltaDistance(self) == constants.WAIT)):
+            elif(self.current_state == constants.STOP and sensors.followerBehaviour(self) == constants.WAIT):
                 self.next_state = constants.STOP
                 print(1)
             #2
-            elif(self.current_state == constants.STOP and (deltaDistance(self) == constants.FOLLOW) and self.st_information.ultrasensor_detection > constants.MAX_SEPARATION):
+            elif(self.current_state == constants.STOP and sensors.followerBehaviour(self) == constants.FOLLOW and self.st_information.ultrasensor_detection > constants.MAX_SEPARATION):
                 self.next_state = constants.MOVING_FORWARD_MAX
                 print(2)
             #3
@@ -297,7 +334,7 @@ class Robot:
                 self.follower_last_known_distance = self.st_information.ultrasensor_detection
                 print(8)
             #9
-            elif(self.current_state == constants.STOP and (deltaDistance(self) == REPELL) and self.st_information.ultrasensor_detection < constants.MIN_SEPARATION) :
+            elif(self.current_state == constants.STOP and (sensors.followerBehaviour(self) == REPELL) and self.st_information.ultrasensor_detection < constants.MIN_SEPARATION) :
                 self.next_state = constants.MOVING_BACKWARD_MAX
                 print(9)
             #10
@@ -328,8 +365,8 @@ class Robot:
                 print(15)
             else:
                 self.next_state = constants.UNDEFINED
-
-            self.current_state = self.next_state
+            """
+            
 
     def updateFiniteStateMachine(self):
         """
