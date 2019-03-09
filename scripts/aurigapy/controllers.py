@@ -3,14 +3,12 @@
 
 ## Este script se encarga de recoger los controladores
 
+import description_constants as constants
 from aurigapy import *
 import time
 
 #TODO: Añadir controlador a bajo nivel de seguimiento de linea
 #TODO: Añadir variables para la pinza y mejorar la funcion sin usar delays
-
-FORWARD     = "forward"
-BACKWARD    = "backward"
 
 # Este struct contendrá las salidas que hay que aplicar a cada motor
 class Actions:
@@ -18,7 +16,7 @@ class Actions:
         print("Init Class Actions")
         
         self.movement_motors_pwm = 0
-        self.command = FORWARD
+        self.command = constants.FORWARD
         self.tool_motor_pwm = 0
         
         self.object_picked = False
@@ -34,11 +32,11 @@ def controllerStop(robot):
     
     elif(robot.mode == 'real_robot'): #Robot real
         robot.st_actions.movement_motors_pwm = 0
-        robot.st_actions.command = FORWARD
+        robot.st_actions.command = constants.FORWARD
     
     else:
         robot.st_actions.movement_motors_pwm = 0
-        robot.st_actions.command = FORWARD
+        robot.st_actions.command = constants.FORWARD
 
 # Controlador específico que se utiliza para avanzar a la máxima velocidad permitida por configuración
 def controllerMovingForwardMax(robot):
@@ -47,11 +45,11 @@ def controllerMovingForwardMax(robot):
     
     elif(robot.mode == 'real_robot'): 
         robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
-        robot.st_actions.command = FORWARD
+        robot.st_actions.command = constants.FORWARD
     
     else:
         robot.st_actions.movement_motors_pwm = 0
-        robot.st_actions.command = FORWARD        
+        robot.st_actions.command = constants.FORWARD        
 
 def controllerMovingForwardProportional(robot):
     if(robot.mode == 'simulation'):
@@ -59,11 +57,11 @@ def controllerMovingForwardProportional(robot):
 
     elif(robot.mode == 'real_robot'):
         robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
-        robot.st_actions.command = FORWARD
+        robot.st_actions.command = constants.FORWARD
     
     else:
         robot.st_actions.movement_motors_pwm = 0
-        robot.st_actions.command = FORWARD 
+        robot.st_actions.command = constants.FORWARD 
         
 def controllerMovingBackwardMax(robot):
     if(robot.mode == 'simulation'):
@@ -71,11 +69,11 @@ def controllerMovingBackwardMax(robot):
     
     elif(robot.mode == 'real_robot'):
         robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
-        robot.st_actions.command = BACKWARD
+        robot.st_actions.command = constants.BACKWARD
     
     else:
         robot.st_actions.movement_motors_pwm = 0
-        robot.st_actions.command = BACKWARD       
+        robot.st_actions.command = constants.BACKWARD       
         
 def controllerMovingBackwardProportional(robot):
     if(robot.mode == 'simulation'):
@@ -83,11 +81,11 @@ def controllerMovingBackwardProportional(robot):
     
     elif(robot.mode == 'real_robot'):
         robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
-        robot.st_actions.command = BACKWARD
+        robot.st_actions.command = constants.BACKWARD
     
     else:
         robot.st_actions.movement_motors_pwm = 0
-        robot.st_actions.command = BACKWARD 
+        robot.st_actions.command = constants.BACKWARD 
         
 def controllerPickPlace(robot):
     if(robot.mode == 'simulation'):
