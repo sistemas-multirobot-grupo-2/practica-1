@@ -16,7 +16,6 @@ import time
 class Data:
     def __init__(self):
         print("Init Class Data")
-        self.previos_ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
         self.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE #Distancia en cm leida por el sensor de distancia. "-1" para UNKNOWN
         self.light_sensor_value = constants.IMPOSSIBLE_LIGHT_VALUE #Valor entre 0 y 1024 de intensidad de luz. "-1" para UNKNOWN
         self.line_detection = constants.UNKNOWN_LINE_VALUE #0-los 2 on; 1-izq on; 2-der on; 3-ninguno. "-1" para UNKNOWN
@@ -27,7 +26,6 @@ class Information:
         print("Init Class Information")
         self.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED #Posicion de un posible objeto (NEAR, FAR, NO)
         self.light_detection = constants.UNKNOWN_LIGHT_DETECTED #Posicion de un posible objeto (HIGH, LOW, UNKNOWN)
-        self.follower_behaviour = constants.WAIT
         
         
 ##------------------Lectura------------------##        

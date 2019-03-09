@@ -30,7 +30,6 @@ class Config:
 
         self.user_interface_refresh_period_in_millis = 500
 
-        self.distance_change = 1
 
 # Clase robot
 class Robot:
@@ -132,9 +131,6 @@ class Robot:
         """
         for sensor in self.PROCESS_SENSORS:
             self.PROCESS_SENSORS[sensor](self,self.sensor_ports[sensor])
-
-        """if(self.rol == "follower"):
-            sensors.follower_behaviour(self)"""
             
     def leaderFiniteStateMachine(self):
         """

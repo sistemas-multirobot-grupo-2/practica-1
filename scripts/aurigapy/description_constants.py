@@ -22,16 +22,6 @@ UNDEFINED   = -1
 EXECUTION_ERROR         = -1
 EXECUTION_SUCCESSFUL    =  0
 
-# Follower limits
-MAX_SEPARATION = 55
-MIN_SEPARATION = 15
-U_S_MARGIN     = 2
-
-# Follower Actions
-FOLLOW = 2
-REPELL = 1
-WAIT   = 0
-
 
 ##-------Sensores-------##
 
