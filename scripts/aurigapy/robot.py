@@ -169,16 +169,16 @@ class Robot:
                 LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_MAX
                 print(5)
             #6
-            elif(self.current_state == constants.STOP and self.st_information.light_detection == constants.NO_LIGHT_DETECTED and self.st_actions.object_picked == False and self.st_actions.grasping == False):
-                LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_MAX
-                print(6)
+            # elif(self.current_state == constants.STOP and self.st_information.light_detection == constants.NO_LIGHT_DETECTED and self.st_actions.object_picked == False and self.st_actions.grasping == False):
+            #    LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_MAX
+            #    print(6)
             #7
             elif(self.current_state == constants.MOVING_FORWARD_MAX and self.st_information.light_detection == constants.HIGH_LIGHT_DETECTED):
                 LEADER_STATE_INFORMATION = self.next_state = constants.STOP
                 self.st_actions.grasping = True
                 print(7)
             #8
-            elif(self.current_state == constants.STOP and self.st_information.light_detection == constants.LOW_LIGHT_DETECTED and self.st_actions.object_picked == False and self.st_actions.grasping == False):
+            elif(self.current_state == constants.STOP and (self.st_information.light_detection == constants.LOW_LIGHT_DETECTED or self.st_information.light_detection == constants.NO_LIGHT_DETECTED) and self.st_actions.object_picked == False and self.st_actions.grasping == False):
                 LEADER_STATE_INFORMATION = self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
                 print(8)
             #9
