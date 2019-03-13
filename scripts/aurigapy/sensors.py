@@ -44,7 +44,11 @@ def readUltraSensor(robot, port):
 
     #Actuar segun el modo en el que este el robot
     if robot.mode == 'simulation': #Simulacion
-        print(robot.name + ": Leemos sensor ultrasonidos en el puerto " + str(port))
+        print(robot.name + ": Leemos el sensor ultrasonidos en el puerto " + str(port))
+        data = input()
+        robot.st_meas.ultrasensor_distance = int(data)
+         
+        
     elif robot.mode == 'real_robot': #Robot real
         #Comprobar que se ha cumplido el tiempo mínimo para consultar el sensor
         if(robot.current_time_ultrasonic - robot.previous_time_ultrasonic > robot.st_config.ultrasonic_sensor_reading_period_in_millis):
@@ -61,7 +65,7 @@ def readUltraSensor(robot, port):
         robot.st_meas.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
         error = True
         
-    print("[*] Dato de distancia: " + str(robot.st_meas.ultrasensor_distance))
+    print(robot.name + ": [*] Dato de distancia: " + str(robot.st_meas.ultrasensor_distance))
     return error #Devolver la variable que indica si ha habido algun fallo
       
   
@@ -80,8 +84,10 @@ def readLightSensor(robot,port):
     
     #Actuar segun el modo en el que este el robot
     if(robot.mode == 'simulation'): #Simulacion
-        print(robot.name + ": Procesamos la información del sensor de luz en el puerto " + str(port))
-    
+        print(robot.name + ": Leemos el sensor de luz en el puerto " + str(port))
+        data = input()
+        robot.st_meas.light_sensor_value = int(data)
+        
     elif(robot.mode == 'real_robot'): #Robot real
         robot.st_meas.light_sensor_value = robot.mobile_robot.get_light_sensor_onboard(port) #Leer datos del sensor
         print("[*] Dato de luz raw: " + str(robot.st_meas.light_sensor_value))
@@ -94,7 +100,7 @@ def readLightSensor(robot,port):
         robot.st_meas.light_sensor_value = constants.IMPOSSIBLE_LIGHT_VALUE
         error = True
         
-    print("[*] Dato de luz: " + str(robot.st_meas.light_sensor_value))
+    print(robot.name + ": [*] Dato de luz: " + str(robot.st_meas.light_sensor_value))
     return error #Devolver la variable que indica si ha habido algun fallo
 
 
@@ -112,7 +118,7 @@ def readLineSensor(robot,port):
     
     #Actuar segun el modo en el que este el robot
     if robot.mode == 'simulation': #Simulacion
-        print(robot.name + ": Procesamos la información del sensor de linea en el puerto " + str(port))
+        print(robot.name + ": Leemos el sensor de linea en el puerto " + str(port))
     
     elif robot.mode == 'real_robot': #Robot real
         robot.st_meas.line_detection = robot.mobile_robot.get_line_sensor(port) #Leer informacion -> 0-los 2 on; 1-izq on; 2-der on; 3-ninguno    
@@ -126,7 +132,7 @@ def readLineSensor(robot,port):
         robot.st_meas.line_detection = constants.UNKNOWN_LINE_VALUE
         error = True
         
-    print("[*] Dato de linea: " + str(robot.st_meas.line_detection))
+    print(robot.name + ": [*] Dato de linea: " + str(robot.st_meas.line_detection))
     return error #Devolver la variable que indica si ha habido algun fallo
                 
 
@@ -179,30 +185,25 @@ def processUltrasonicSensorData(robot,port):
     """
     error = False #Variable que contiene el valor de retorno
     
-    if(robot.mode == 'simulation'):
-        print(robot.name + ": Procesamos la información del sensor de ultrasonidos en el puerto " + str(port))
+    print(robot.name + ": Procesamos la información del sensor de ultrasonidos en el puerto " + str(port))
     
-    elif(robot.mode == 'real_robot'):
-        if(robot.st_meas.ultrasensor_distance == constants.IMPOSSIBLE_DISTANCE):
-           robot.st_information.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED
-           error = True
-  
-        elif(robot.st_meas.ultrasensor_distance < robot.st_config.near_object_threshold):
-            robot.st_information.ultrasensor_detection = constants.COLLISION_OBJECT_DETECTED 
-        
-        elif(robot.st_meas.ultrasensor_distance > robot.st_config.near_object_threshold and robot.st_meas.ultrasensor_distance < robot.st_config.far_object_threshold):
-            robot.st_information.ultrasensor_detection = constants.NEAR_OBJECT_DETECTED 
-        
-        elif(robot.st_meas.ultrasensor_distance > robot.st_config.far_object_threshold):
-            robot.st_information.ultrasensor_detection = constants.FAR_OBJECT_DETECTED
-        else:
-            robot.st_information.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED 
+    if(robot.st_meas.ultrasensor_distance == constants.IMPOSSIBLE_DISTANCE):
+       robot.st_information.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED
+       error = True
+
+    elif(robot.st_meas.ultrasensor_distance < robot.st_config.near_object_threshold):
+        robot.st_information.ultrasensor_detection = constants.COLLISION_OBJECT_DETECTED 
     
-    else: #Cualquier otro caso -> ERROR
-        error = True
-        robot.st_information.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED
-        
-    print("[*] Procesado de distancia: " + str(robot.st_information.ultrasensor_detection))
+    elif(robot.st_meas.ultrasensor_distance > robot.st_config.near_object_threshold and robot.st_meas.ultrasensor_distance < robot.st_config.far_object_threshold):
+        robot.st_information.ultrasensor_detection = constants.NEAR_OBJECT_DETECTED 
+    
+    elif(robot.st_meas.ultrasensor_distance > robot.st_config.far_object_threshold):
+        robot.st_information.ultrasensor_detection = constants.FAR_OBJECT_DETECTED
+    else:
+        robot.st_information.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED 
+    
+
+    print(robot.name + ": [*] Procesado de distancia: " + str(robot.st_information.ultrasensor_detection))
     return error
         
     
@@ -220,33 +221,27 @@ def processLightSensorData(robot,port):
     error = False #Variable que contiene el valor de retorno
     
     #Actuar segun el modo en el que este el robot
-    if(robot.mode == 'simulation'): #Simulacion
-        print(robot.name + ": Procesamos la información del sensor de luz en el puerto " + str(port))
+    print(robot.name + ": Procesamos la información del sensor de luz en el puerto " + str(port))
         
-    elif(robot.mode == 'real_robot'): #Robot real
-        
-        if(robot.st_meas.light_sensor_value == constants.IMPOSSIBLE_LIGHT_VALUE):
-            robot.st_information.light_detection = constants.UNKNOWN_LIGHT_DETECTED #UNKNOWN_LIGHT_DETECTED=0
-            error = True
-        
-        elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_max):
-            robot.st_information.light_detection = constants.HIGH_LIGHT_DETECTED #HIGH_LIGHT_DETECTED=1
-        
-        elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_min and robot.st_meas.light_sensor_value < robot.st_config.light_threshold_max):
-            robot.st_information.light_detection = constants.LOW_LIGHT_DETECTED #LOW_LIGHT_DETECTED=2
-        
-        elif(robot.st_meas.light_sensor_value < robot.st_config.light_threshold_min):
-            robot.st_information.light_detection = constants.NO_LIGHT_DETECTED 
-        
-        else: #Cualquier otro caso -> ERROR
-            robot.st_information.light_detection = constants.UNKNOWN_LIGHT_DETECTED
-            error = True
-            
+    if(robot.st_meas.light_sensor_value == constants.IMPOSSIBLE_LIGHT_VALUE):
+        robot.st_information.light_detection = constants.UNKNOWN_LIGHT_DETECTED #UNKNOWN_LIGHT_DETECTED=0
+        error = True
+    
+    elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_max):
+        robot.st_information.light_detection = constants.HIGH_LIGHT_DETECTED #HIGH_LIGHT_DETECTED=1
+    
+    elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_min and robot.st_meas.light_sensor_value < robot.st_config.light_threshold_max):
+        robot.st_information.light_detection = constants.LOW_LIGHT_DETECTED #LOW_LIGHT_DETECTED=2
+    
+    elif(robot.st_meas.light_sensor_value < robot.st_config.light_threshold_min):
+        robot.st_information.light_detection = constants.NO_LIGHT_DETECTED 
+    
     else: #Cualquier otro caso -> ERROR
         robot.st_information.light_detection = constants.UNKNOWN_LIGHT_DETECTED
         error = True
+    
         
-    print("[*] Procesado de luz: " + str(robot.st_information.light_detection))
+    print(robot.name + ": [*] Procesado de luz: " + str(robot.st_information.light_detection))
     return error
 
         
