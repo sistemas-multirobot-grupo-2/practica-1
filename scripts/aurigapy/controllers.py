@@ -59,19 +59,19 @@ def controllerMovingForwardProportional(robot):
         if(robot.rol == constants.LEADER):
             print("prop1")
             if(robot.st_meas.light_sensor_value <= robot.st_config.light_threshold_min):
-                robot.st_actions.movement_motors_pwm = 0.0
+                robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
                 
             elif(robot.st_meas.light_sensor_value >= robot.st_config.light_threshold_max):
-                robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
+                robot.st_actions.movement_motors_pwm = 0.0
                 
             else:
                 robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm - ((robot.st_config.max_movement_motors_pwm - robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / float(robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
 
         elif(robot.rol == constants.FOLLOWER):
-            if(robot.st_meas.ultrasensor_distance < robot.st_config.near_object_threshold):
+            if(robot.st_meas.ultrasensor_distance <= robot.st_config.near_object_threshold):
                 robot.st_actions.movement_motors_pwm = 0.0
                 
-            elif(robot.st_meas.ultrasensor_distance > robot.st_config.far_object_threshold):
+            elif(robot.st_meas.ultrasensor_distance >= robot.st_config.far_object_threshold):
                 robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
                 
             else:
@@ -103,20 +103,20 @@ def controllerMovingBackwardProportional(robot):
     
     elif(robot.mode == 'real_robot'):
         if(robot.rol == constants.LEADER):
-            if(robot.st_meas.light_sensor_value < robot.st_config.light_threshold_min):
-                robot.st_actions.movement_motors_pwm = 0
-                
-            elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_max):
+            if(robot.st_meas.light_sensor_value <= robot.st_config.light_threshold_min):
                 robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
+                
+            elif(robot.st_meas.light_sensor_value >= robot.st_config.light_threshold_max):
+                robot.st_actions.movement_motors_pwm = 0.0
                 
             else:
                 robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm - ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.light_sensor_value - robot.st_config.light_threshold_min)) / (robot.st_config.light_threshold_max - robot.st_config.light_threshold_min)                                 
        
         elif(robot.rol == constants.FOLLOWER):
-            if(robot.st_meas.ultrasensor_distance < robot.st_config.near_object_threshold):
+            if(robot.st_meas.ultrasensor_distance <= robot.st_config.near_object_threshold):
                 robot.st_actions.movement_motors_pwm = 0
                 
-            elif(robot.st_meas.ultrasensor_distance > robot.st_config.far_object_threshold):
+            elif(robot.st_meas.ultrasensor_distance >= robot.st_config.far_object_threshold):
                 robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
                 
             else:
