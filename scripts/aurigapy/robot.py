@@ -24,8 +24,8 @@ class Config:
         self.light_threshold_max = 700
         self.light_threshold_min = 300
         
-        self.near_object_threshold  = 10
-        self.far_object_threshold   = 250
+        self.near_object_threshold  = 15
+        self.far_object_threshold   = 75
         
         self.user_interface_refresh_period_in_millis = 500
         
