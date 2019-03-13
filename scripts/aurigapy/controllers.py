@@ -75,7 +75,7 @@ def controllerMovingForwardProportional(robot):
                 robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm
                 
             else:
-                robot.st_actions.movement_motors_pwm = robot.st_config.min_movement_motors_pwm + ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.ultrasensor_distance - robot.st_config.near_object_threshold)) / (robot.st_config.far_object_threshold - robot.st_config.near_object_threshold)                                 
+                robot.st_actions.movement_motors_pwm = robot.st_config.max_movement_motors_pwm - ((robot.st_config.max_movement_motors_pwm- robot.st_config.min_movement_motors_pwm) * (robot.st_meas.ultrasensor_distance - robot.st_config.near_object_threshold)) / (robot.st_config.far_object_threshold - robot.st_config.near_object_threshold)                                 
        
         else:
             robot.st_actions.movement_motors_pwm = 0.0
