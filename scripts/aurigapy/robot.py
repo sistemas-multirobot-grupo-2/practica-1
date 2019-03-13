@@ -21,8 +21,8 @@ class Config:
         
         self.ultrasonic_sensor_reading_period_in_millis = 150
         
-        self.light_threshold_max = 700
-        self.light_threshold_min = 300
+        self.light_threshold_max = 700.0
+        self.light_threshold_min = 300.0
         
         self.near_object_threshold  = 15
         self.far_object_threshold   = 75
@@ -45,6 +45,7 @@ class Robot:
             self.mobile_robot = AurigaPy(debug=False)
             self.mobile_robot.connect(bluetooth_path)
             self.error = constants.EXECUTION_SUCCESSFUL
+            
             self.next_state = constants.STOP 
         
         elif(self.mode == 'simulation'):
@@ -414,7 +415,7 @@ class Robot:
                 self.refreshUserInterface()
                 
                 print(self.name + ": --------------------------")
-                #time.sleep(2) #!!!!!!!!!!!!!!!! ELIMINAR DELAY !!!!!!!!!!!!!!!!#  
+                #time.sleep(1) #!!!!!!!!!!!!!!!! ELIMINAR DELAY !!!!!!!!!!!!!!!!#  
     
     
         elif(self.mode == "simulation"):
@@ -436,5 +437,5 @@ class Robot:
 
             # Publicamos info importante para el debug
             self.refreshUserInterface()
-            
+
             print(self.name + ": --------------------------")

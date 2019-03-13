@@ -191,13 +191,13 @@ def processUltrasonicSensorData(robot,port):
        robot.st_information.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED
        error = True
 
-    elif(robot.st_meas.ultrasensor_distance < robot.st_config.near_object_threshold):
+    elif(robot.st_meas.ultrasensor_distance <= robot.st_config.near_object_threshold):
         robot.st_information.ultrasensor_detection = constants.COLLISION_OBJECT_DETECTED 
     
     elif(robot.st_meas.ultrasensor_distance > robot.st_config.near_object_threshold and robot.st_meas.ultrasensor_distance < robot.st_config.far_object_threshold):
         robot.st_information.ultrasensor_detection = constants.NEAR_OBJECT_DETECTED 
     
-    elif(robot.st_meas.ultrasensor_distance > robot.st_config.far_object_threshold):
+    elif(robot.st_meas.ultrasensor_distance >= robot.st_config.far_object_threshold):
         robot.st_information.ultrasensor_detection = constants.FAR_OBJECT_DETECTED
     else:
         robot.st_information.ultrasensor_detection = constants.UNKNOWN_OBJECT_DETECTED 
@@ -227,13 +227,13 @@ def processLightSensorData(robot,port):
         robot.st_information.light_detection = constants.UNKNOWN_LIGHT_DETECTED #UNKNOWN_LIGHT_DETECTED=0
         error = True
     
-    elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_max):
+    elif(robot.st_meas.light_sensor_value >= robot.st_config.light_threshold_max):
         robot.st_information.light_detection = constants.HIGH_LIGHT_DETECTED #HIGH_LIGHT_DETECTED=1
     
     elif(robot.st_meas.light_sensor_value > robot.st_config.light_threshold_min and robot.st_meas.light_sensor_value < robot.st_config.light_threshold_max):
         robot.st_information.light_detection = constants.LOW_LIGHT_DETECTED #LOW_LIGHT_DETECTED=2
     
-    elif(robot.st_meas.light_sensor_value < robot.st_config.light_threshold_min):
+    elif(robot.st_meas.light_sensor_value <= robot.st_config.light_threshold_min):
         robot.st_information.light_detection = constants.NO_LIGHT_DETECTED 
     
     else: #Cualquier otro caso -> ERROR
