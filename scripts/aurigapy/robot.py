@@ -259,11 +259,14 @@ class Robot:
         elif(LEADER_STATE_INFORMATION == constants.EMERGENCY or LEADER_STATE_INFORMATION == constants.UNDEFINED or LEADER_STATE_INFORMATION == constants.STOP or LEADER_STATE_INFORMATION == constants.PICK_PLACE_OBJECT):
             self.next_state = constants.STOP
         
+        elif((LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.COLLISION_OBJECT_DETECTED):
+            self.next_state = constants.STOP
+            
+        elif((LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.NEAR_OBJECT_DETECTED):
+            self.next_state = constants.MOVING_FORWARD_PROPORTIONAL        
+        
         elif((LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.FAR_OBJECT_DETECTED):
             self.next_state = constants.MOVING_FORWARD_MAX
-         
-        elif((LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_FORWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.NEAR_OBJECT_DETECTED):
-            self.next_state = constants.MOVING_FORWARD_PROPORTIONAL
         
         elif((LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.COLLISION_OBJECT_DETECTED):
             self.next_state = constants.MOVING_BACKWARD_MAX
@@ -271,19 +274,22 @@ class Robot:
         elif((LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.NEAR_OBJECT_DETECTED):
             self.next_state = constants.MOVING_BACKWARD_PROPORTIONAL
         
-        elif(self.current_state == constants.MOVING_FORWARD_MAX and self.st_information.ultrasensor_detection == COLLISION_OBJECT_DETECTED):
+        elif((LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_MAX or LEADER_STATE_INFORMATION == constants.MOVING_BACKWARD_PROPORTIONAL) and self.st_information.ultrasensor_detection == constants.FAR_OBJECT_DETECTED):
             self.next_state = constants.STOP
         
-        elif(self.current_state == constants.MOVING_FORWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == COLLISION_OBJECT_DETECTED):
+        elif(self.current_state == constants.MOVING_FORWARD_MAX and self.st_information.ultrasensor_detection == constants.COLLISION_OBJECT_DETECTED):
+            self.next_state = constants.STOP
+        
+        elif(self.current_state == constants.MOVING_FORWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == constants.COLLISION_OBJECT_DETECTED):
             self.next_state = constants.STOP
             
-        elif(self.current_state == constants.MOVING_BACKWARD_MAX and self.st_information.ultrasensor_detection == FAR_OBJECT_DETECTED):
+        elif(self.current_state == constants.MOVING_BACKWARD_MAX and self.st_information.ultrasensor_detection == constants.FAR_OBJECT_DETECTED):
             self.next_state = constants.STOP
         
-        elif(self.current_state == constants.MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == FAR_OBJECT_DETECTED):
+        elif(self.current_state == constants.MOVING_BACKWARD_PROPORTIONAL and self.st_information.ultrasensor_detection == constants.FAR_OBJECT_DETECTED):
             self.next_state = constants.STOP
         
-        elif(self.st_information.ultrasensor_detection == UNKNOWN_OBJECT_DETECTED):
+        elif(self.st_information.ultrasensor_detection == constants.UNKNOWN_OBJECT_DETECTED):
             self.next_state = constants.STOP 
         
         else:
