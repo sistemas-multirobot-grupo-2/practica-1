@@ -29,6 +29,8 @@ class Config:
         
         self.user_interface_refresh_period_in_millis = 500
         
+        self.st_config.base_speed = 40.0
+        self.st_config.base_turn = 25.0
         
         
 # Clase robot

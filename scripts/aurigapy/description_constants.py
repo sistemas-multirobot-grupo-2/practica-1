@@ -55,9 +55,10 @@ UNKNOWN_LINE_VALUE      = -1
 
 
 ##-------Controladores-------##
-
 FORWARD     = "forward"
 BACKWARD    = "backward"
+RIGHT       = "right"
+LEFT        = "left"
 
 
 
