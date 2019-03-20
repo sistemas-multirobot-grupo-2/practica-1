@@ -20,6 +20,9 @@ class Data:
         self.light_sensor_value = constants.IMPOSSIBLE_LIGHT_VALUE #Valor entre 0 y 1024 de intensidad de luz. "-1" para UNKNOWN
         self.line_detection = constants.UNKNOWN_LINE_VALUE #0-los 2 on; 1-izq on; 2-der on; 3-ninguno. "-1" para UNKNOWN
         
+        self.current_time_ultrasonic = time.time()*1000
+        self.previous_time_ultrasonic = self.current_time_ultrasonic
+
 # Este struct contendrá la información procesada de los sensores
 class Information:
     def __init__(self):
@@ -42,29 +45,30 @@ def readUltraSensor(robot, port):
     """
     error = False #Variable que contiene el valor de retorno
 
-    #Actuar segun el modo en el que este el robot
-    if robot.mode == 'simulation': #Simulacion
-        print(robot.name + ": Leemos el sensor ultrasonidos en el puerto " + str(port))
-        data = input()
-        robot.st_meas.ultrasensor_distance = int(data)
-         
-        
-    elif robot.mode == 'real_robot': #Robot real
-        #Comprobar que se ha cumplido el tiempo mínimo para consultar el sensor
-        if(robot.current_time_ultrasonic - robot.previous_time_ultrasonic > robot.st_config.ultrasonic_sensor_reading_period_in_millis):
+    #Comprobar que se ha cumplido el tiempo mínimo para consultar el sensor
+    robot.st_meas.current_time_ultrasonic = time.time()*1000
+    
+    if(robot.st_meas.current_time_ultrasonic - robot.st_meas.previous_time_ultrasonic > robot.st_config.ultrasonic_sensor_reading_period_in_millis):
+        print("h")
+        if robot.mode == 'real_robot': #Robot real
             robot.st_meas.ultrasensor_distance = robot.mobile_robot.get_ultrasonic_reading(port) #Actualizar medida anterior
-            robot.previous_time_ultrasonic = time.time()*1000 #Actualizar tiempo de "ultima medida"
-            
-            if(robot.st_meas.ultrasensor_distance < constants.MIN_ULTRASONIC_VALUE or robot.st_meas.ultrasensor_distance > constants.MAX_ULTRASONIC_VALUE):
-                robot.st_meas.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
-            
+        elif robot.mode == 'simulation':
+            print(robot.name + ": Leemos el sensor ultrasonidos en el puerto " + str(port))
+            data = input()
+            robot.st_meas.ultrasensor_distance = int(data)    
         else:
             robot.st_meas.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
-            error = True #Indicar error porque NO se ha podido leer la distancia (ha pasado demasiado poco tiempo)
-    else: #Cualquier otro caso -> ERROR
-        robot.st_meas.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
-        error = True
+            error = True #Indicar error porque NO se ha podido leer la distancia (ha pasado demasiado poco tiempo)  
         
+        robot.st_meas.previous_time_ultrasonic = robot.st_meas.current_time_ultrasonic #Actualizar tiempo de "ultima medida"
+        
+        if(robot.st_meas.ultrasensor_distance < constants.MIN_ULTRASONIC_VALUE or robot.st_meas.ultrasensor_distance > constants.MAX_ULTRASONIC_VALUE):
+            robot.st_meas.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
+        
+    else:
+        robot.st_meas.ultrasensor_distance = constants.IMPOSSIBLE_DISTANCE
+        error = True #Indicar error porque NO se ha podido leer la distancia (ha pasado demasiado poco tiempo)
+
     print(robot.name + ": [*] Dato de distancia: " + str(robot.st_meas.ultrasensor_distance))
     return error #Devolver la variable que indica si ha habido algun fallo
       

@@ -9,7 +9,7 @@ import controllers
 import time
 
 
-LEADER_STATE_INFORMATION = constants.STOP
+LEADER_STATE_INFORMATION = constants.MOVING_FORWARD_MAX
 
 ##---------------Clases--------------------##
 # Este struct contendrá la información de configuración del robot
