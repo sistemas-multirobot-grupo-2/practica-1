@@ -60,6 +60,10 @@ BACKWARD    = "backward"
 RIGHT       = "right"
 LEFT        = "left"
 
+# Velocidades siguelíneas
+BASE_SPEED = 40
+BASE_TURN = 25
+
 
 
 
