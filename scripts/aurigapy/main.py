@@ -13,30 +13,30 @@ def main():
     
     try:
         
-        """robot1 = Robot(name="Robot1",mode=args.mode,bluetooth_path="/dev/rfcomm1",robot_rol="leader",
-                        robot_sensors_list=["light","line"],
-                        robot_sensor_ports_list=[1,9])"""
-        
+        robot1 = Robot(name="Robot1",mode=args.mode,bluetooth_path="/dev/rfcomm1",robot_rol="leader",
+                        robot_sensors_list=["light"],
+                        robot_sensor_ports_list=[1])
+        """
         robot2 = Robot(name="Robot2",mode=args.mode,bluetooth_path="/dev/rfcomm8",robot_rol="follower",
-                        robot_sensors_list=["ultrasonic","line"],
-                        robot_sensor_ports_list=[10,9])
+                        robot_sensors_list=["ultrasonic"],
+                        robot_sensor_ports_list=[10])
+        """
         
-        
-#        robot1.addSensors()
-        robot2.addSensors()
+        robot1.addSensors()
+        #robot2.addSensors()
         
         if(args.mode == "real_robot"):
             robot1.run_main()
-#            t1 = threading.Thread(target=robot1.run_main)
-#            t2 = threading.Thread(target=robot2.run_main)
-#            t1.start()
-#            t2.start()
-#            t1.join()
-#            t2.join()
+        #    t1 = threading.Thread(target=robot1.run_main)
+        #    t2 = threading.Thread(target=robot2.run_main)
+        #    t1.start()
+        #    t2.start()
+        #    t1.join()
+        #    t2.join()
         elif(args.mode == "simulation"):
             while True:
-                #robot1.run_main()
-                robot2.run_main() 
+                robot1.run_main()
+        #       robot2.run_main() 
               
         
     except KeyboardInterrupt:

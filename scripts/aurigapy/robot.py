@@ -24,14 +24,13 @@ class Config:
         self.light_threshold_max = 700.0
         self.light_threshold_min = 300.0
         
-        self.near_object_threshold  = 15
-        self.far_object_threshold   = 75
+        self.near_object_threshold  = 10
+        self.far_object_threshold   = 20
         
-        self.user_interface_refresh_period_in_millis = 500
+        self.user_interface_refresh_period_in_millis = 250
         
-        self.st_config.base_speed = 40.0
-        self.st_config.base_turn = 25.0
-        
+        self.base_speed = 40.0
+        self.base_turn = 25.0        
         
 # Clase robot
 class Robot:
@@ -39,8 +38,7 @@ class Robot:
         print("Init Class Robot")
         
         self.name = name
-        self.mode = mode
-        
+        self.mode = mode        
         
         if(self.mode == 'real_robot'):
             print(self.name + ": Modo usando el Robot real")
@@ -65,7 +63,9 @@ class Robot:
         self.st_meas = sensors.Data() 
         self.st_information = sensors.Information()
         self.st_actions = controllers.Actions()
+
         
+
         
         if robot_rol == "leader":
             self.rol = constants.LEADER
@@ -83,8 +83,7 @@ class Robot:
         self.READ_SENSORS = {0:""}
         self.PROCESS_SENSORS = {0:""}
         
-        self.current_state = self.next_state
-        
+        self.current_state = self.next_state      
         
     def addSensors(self):
         """
@@ -402,14 +401,16 @@ class Robot:
                 
                 # Extraemos la información a partir de los datos
                 self.processData()
-                
+                print("hola")
+
                 # Actualizamos la máquina de estados a partir de la información recibida por los sensores 
                 self.updateFiniteStateMachine()
-               
+                print("hola")
+
                 # Calculamos las acciones que tenemos que aplicar a los distintos motores, en función del
                 # estado y las lecturas de los sensores
                 self.controller()
-                
+
                 # Pasamos a motores las acciones calculadas
                 self.execute()
 
@@ -424,6 +425,7 @@ class Robot:
            # Leemos los sensores
             self.readSensors()
             
+
             # Extraemos la información a partir de los datos
             self.processData()
             

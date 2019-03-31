@@ -97,7 +97,7 @@ def readLightSensor(robot,port):
         print("[*] Dato de luz raw: " + str(robot.st_meas.light_sensor_value))
         # sensor si la lectura da un valor ilogico
         if(robot.st_meas.light_sensor_value < constants.MIN_LIGHT_VALUE or robot.st_meas.light_sensor_value > constants.MAX_LIGHT_VALUE):
-            robot.st_meas.light_sensor_value = constants.IMPOSSIBLE_LIGHT_VALUE
+            robot.st_meas.light_sensor_value = int(constants.IMPOSSIBLE_LIGHT_VALUE)
             error = True
             
     else: #Cualquier otro caso -> ERROR
