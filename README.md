@@ -1,4 +1,4 @@
-# Practica 1
+# Práctica 1
 Este repositorio que contiene los codigos y la documentación de la primera práctica de la asignatura Sistemas Multirrobot, de 4º curso de Ingeniería Robótica, de la Universidad de Alicante.
 
 # Descripción general de la práctica
@@ -30,4 +30,6 @@ pdflatex Aurigapy.tex Aurigapy.pdf
 ```
 
 ## Comportamiento general
-Colocaremos los robots en fila uno delante de otro en un circuito delimitado por una línea el procedimiento consistirá en utilizar el robot dotado de ultrasonido como director que seguira la línea del circuito y tendrá la responsabilidad de detectar un obstáculo en el camino, detenerse y enviar una orden de detención al robot seguidor. No se retomará la marcha hasta que el robot director no deje de detectar el obstáculo.
+Colocaremos los robots en fila uno delante de otro en un circuito delimitado por una línea. El procedimiento consistirá en utilizar el robot dotado de la pinza como líder, siguiendo la línea del circuito y teniendo la responsabilidad de detectar un obstáculo en el camino (gracias a un gran aumento en la luz percibida por los sensores de luminosidad), detenerse y enviar una orden de detención al robot seguidor. A continuación, se comenzará una marcha atrás hasta que el líder vuelva a detectar otro foco de luz, momento en el que se detendrá y dejará el objeto. 
+
+Durante todo momento, el robot seguidor imitará al líder en lo referente al sentido de marcha, regulando su velocidad según la distancia hasta el otro robot, percibida gracias al sensor de ultrasonidos. Se coordinarán tanto en la marcha alante como en la marcha atrás.
